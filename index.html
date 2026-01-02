@@ -90,8 +90,9 @@
         .form-input { width: 100%; padding: 12px; border: 1px solid #eee; border-radius: 10px; outline: none; }
         .btn-save { width: 100%; padding: 12px; background: var(--primary-color); color: white; border: none; border-radius: 10px; font-weight: 600; cursor: pointer; transition: background 0.3s ease; }
         .btn-logout { background-color: var(--danger); margin-top: 10px; }
+        .btn-backup { background-color: #3B82F6; margin-bottom: 10px; }
 
-        /* --- OOBE SCREEN (WELCOME/LOADING) --- */
+        /* --- OOBE SCREEN --- */
         .oobe-screen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
@@ -178,6 +179,14 @@
             <span onclick="switchAuthMode('forgot')" class="link-text" style="color: #666; font-size: 12px;">Lupa Password?</span>
             <span onclick="switchAuthMode('register')" id="switchText">Belum punya akun? <b class="link-text">Daftar</b></span>
         </div>
+        
+        <div style="margin-top: 20px; border-top: 1px solid #eee; padding-top: 15px;">
+            <p style="font-size: 11px; color: #888; margin-bottom: 5px;">Pindah ke HP Baru?</p>
+            <button class="btn-save" style="background:#666; padding: 8px; font-size: 12px;" onclick="document.getElementById('importFileInputLogin').click()">
+                <i class="fas fa-file-import"></i> Restore Data
+            </button>
+            <input type="file" id="importFileInputLogin" style="display: none;" accept=".json" onchange="importData(this)">
+        </div>
     </div>
 </div>
 
@@ -261,14 +270,28 @@
                 <div class="section-title" style="margin-top:20px;">Pengaturan Akun</div>
                 
                 <div class="info-card">
+                    <h4 style="margin-bottom:15px; color: var(--primary-color);">Pindahkan Data</h4>
+                    <p style="font-size:12px; color:#666; margin-bottom:15px;">
+                        Gunakan ini untuk memindahkan akun ke HP lain.
+                    </p>
+                    <button class="btn-save btn-backup" onclick="exportData()">
+                        <i class="fas fa-download"></i> Download Data (Backup)
+                    </button>
+                    <button class="btn-save" style="background-color: #666;" onclick="document.getElementById('importFileInput').click()">
+                        <i class="fas fa-file-import"></i> Restore Data (Upload)
+                    </button>
+                    <input type="file" id="importFileInput" style="display: none;" accept=".json" onchange="importData(this)">
+                </div>
+
+                <div class="info-card">
                     <h4 style="margin-bottom:15px;">Ganti Warna Tema</h4>
                     <div class="theme-selector">
-                        <div class="theme-btn" style="background:#8B5CF6" onclick="setTheme('#8B5CF6', '#7C3AED')" title="Ungu (Default)"></div>
-                        <div class="theme-btn" style="background:#3B82F6" onclick="setTheme('#3B82F6', '#2563EB')" title="Biru"></div>
-                        <div class="theme-btn" style="background:#10B981" onclick="setTheme('#10B981', '#059669')" title="Hijau"></div>
-                        <div class="theme-btn" style="background:#EC4899" onclick="setTheme('#EC4899', '#DB2777')" title="Pink"></div>
-                        <div class="theme-btn" style="background:#F97316" onclick="setTheme('#F97316', '#EA580C')" title="Oranye"></div>
-                        <div class="theme-btn" style="background:#374151" onclick="setTheme('#374151', '#111827')" title="Hitam"></div>
+                        <div class="theme-btn" style="background:#8B5CF6" onclick="setTheme('#8B5CF6', '#7C3AED')"></div>
+                        <div class="theme-btn" style="background:#3B82F6" onclick="setTheme('#3B82F6', '#2563EB')"></div>
+                        <div class="theme-btn" style="background:#10B981" onclick="setTheme('#10B981', '#059669')"></div>
+                        <div class="theme-btn" style="background:#EC4899" onclick="setTheme('#EC4899', '#DB2777')"></div>
+                        <div class="theme-btn" style="background:#F97316" onclick="setTheme('#F97316', '#EA580C')"></div>
+                        <div class="theme-btn" style="background:#374151" onclick="setTheme('#374151', '#111827')"></div>
                     </div>
                 </div>
 
@@ -295,7 +318,6 @@
 
                 <div class="info-card">
                     <h4 style="margin-bottom:15px; color: var(--danger);">Zona Bahaya</h4>
-                    <p style="font-size:12px; color:#666; margin-bottom:15px;">Tindakan ini akan menghapus seluruh saldo dan riwayat transaksi menjadi awal.</p>
                     <button class="btn-save" style="background-color: var(--danger);" onclick="resetBalance()">
                         <i class="fas fa-trash-alt"></i> Reset Saldo ke Awal
                     </button>
@@ -359,6 +381,50 @@
             document.getElementById('authScreen').style.display = 'flex';
         });
     });
+
+    // --- IMPORT / EXPORT DATA LOGIC (SOLUSI PINDAH DEVICE) ---
+    function exportData() {
+        const dataStr = JSON.stringify(users);
+        const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+        
+        const exportFileDefaultName = 'backup_celenganku.json';
+        
+        const linkElement = document.createElement('a');
+        linkElement.setAttribute('href', dataUri);
+        linkElement.setAttribute('download', exportFileDefaultName);
+        linkElement.click();
+    }
+
+    function importData(inputElement) {
+        const file = inputElement.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            try {
+                const importedUsers = JSON.parse(e.target.result);
+                if (Array.isArray(importedUsers)) {
+                    // Validasi sederhana struktur data
+                    if(importedUsers.length > 0 && importedUsers[0].hasOwnProperty('username')) {
+                        if(confirm("PERINGATAN: Ini akan menimpa data yang ada di HP ini. Yakin?")) {
+                            localStorage.setItem('celengan_users_v3', JSON.stringify(importedUsers));
+                            users = importedUsers;
+                            alert("Data berhasil dipulihkan! Halaman akan dimuat ulang.");
+                            location.reload();
+                        }
+                    } else {
+                        alert("Format file salah!");
+                    }
+                } else {
+                    alert("File korup atau bukan data CelenganKu.");
+                }
+            } catch (err) {
+                alert("Gagal membaca file!");
+            }
+        };
+        reader.readAsText(file);
+    }
+
 
     // --- HELPER THEME ---
     function setTheme(primary, dark) {
@@ -526,7 +592,7 @@
                 currentUser.balance = 0;
                 currentUser.transactions = [];
                 updateUI();
-                renderHistory(); // update tampilan history
+                renderHistory(); 
                 alert("Saldo dan Riwayat berhasil direset ke awal.");
             }
         }
