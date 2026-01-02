@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CelenganKu</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <style>
+        :root {
+            /* Default Theme: Ungu */
+            --primary-color: #8B5CF6; 
+            --primary-dark: #7C3AED;
+            
+            --bg-color: #F3F4F6;
+            --desktop-sidebar-width: 260px;
+            --text-dark: #1F2937;
+            --success: #10B981;
+            --danger: #EF4444;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        body { background-color: var(--bg-color); height: 100vh; overflow: hidden; }
+
+        /* --- LAYOUT --- */
+        .app-container { width: 100%; height: 100%; display: flex; }
+        
+        /* SIDEBAR (DESKTOP) */
+        .sidebar {
+            display: none; width: var(--desktop-sidebar-width); background: white;
+            flex-direction: column; padding: 30px; border-right: 1px solid #eee; z-index: 100;
+        }
+        .sidebar-logo { font-size: 24px; font-weight: 700; color: var(--primary-color); margin-bottom: 50px; }
+        .sidebar-item {
+            padding: 15px; margin-bottom: 10px; border-radius: 12px; color: #666; 
+            cursor: pointer; transition: 0.2s; font-weight: 500; display: flex; gap: 15px; align-items: center;
+        }
+        .sidebar-item:hover, .sidebar-item.active { background-color: #F3E8FF; color: var(--primary-color); }
+
+        /* MAIN AREA */
+        .main-area { flex: 1; position: relative; overflow: hidden; display: flex; flex-direction: column; }
+        .screen-container { flex: 1; overflow-y: auto; background-color: var(--bg-color); padding-bottom: 80px; }
+
+        /* HEADER & CARDS */
+        .purple-header { 
+            background: linear-gradient(180deg, var(--primary-color) 0%, var(--primary-dark) 100%); 
+            padding: 25px 25px 90px 25px; color: white; border-radius: 0 0 30px 30px; 
+            transition: background 0.3s ease;
+        }
+        .balance-card { background: white; margin: -70px 20px 25px 20px; padding: 25px; border-radius: 24px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); position: relative; }
+        .balance-amount { font-size: 30px; font-weight: 700; color: var(--text-dark); margin: 5px 0 15px 0; }
+
+        /* GRID MENUS */
+        .menu-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; padding: 0 20px; margin-bottom: 30px; }
+        .action-btn { display: flex; flex-direction: column; align-items: center; gap: 10px; cursor: pointer; }
+        .icon-box { width: 55px; height: 55px; background: white; color: var(--primary-color); border-radius: 18px; display: flex; justify-content: center; align-items: center; font-size: 22px; box-shadow: 0 2px 10px rgba(0,0,0,0.03); transition: color 0.3s ease; }
+
+        /* SCREENS & UTILS */
+        .screen { display: none; animation: fadeIn 0.3s ease; }
+        .screen.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .section-title { padding: 0 25px; margin-bottom: 15px; font-weight: 700; color: var(--text-dark); }
+        .info-card { background: white; margin: 20px; padding: 20px; border-radius: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); }
+
+        /* --- THEME SELECTOR --- */
+        .theme-selector { display: flex; gap: 15px; justify-content: center; margin-top: 15px; flex-wrap: wrap; }
+        .theme-btn { width: 40px; height: 40px; border-radius: 50%; cursor: pointer; border: 3px solid #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.2); transition: transform 0.2s; }
+        .theme-btn:active { transform: scale(0.9); }
+        .theme-btn:hover { transform: scale(1.1); }
+
+        /* --- GAME FLAPPY STYLE --- */
+        #gameCanvas {
+            background: #70c5ce; /* Sky blue */
+            border-radius: 15px;
+            width: 100%;
+            max-width: 400px;
+            height: 500px;
+            display: block;
+            margin: 0 auto;
+            border: 4px solid #333;
+        }
+        .game-overlay { text-align: center; margin-top: 15px; }
+
+        /* --- PASSWORD FORM --- */
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; font-size: 12px; color: #666; margin-bottom: 5px; }
+        .form-input { width: 100%; padding: 12px; border: 1px solid #eee; border-radius: 10px; outline: none; }
+        .btn-save { width: 100%; padding: 12px; background: var(--primary-color); color: white; border: none; border-radius: 10px; font-weight: 600; cursor: pointer; transition: background 0.3s ease; }
+        .btn-logout { background-color: var(--danger); margin-top: 10px; }
+
+        /* --- OOBE SCREEN (WELCOME/LOADING) --- */
+        .oobe-screen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            z-index: 3000; display: flex; justify-content: center; align-items: center;
+            color: white; text-align: center; animation: fadeIn 0.5s ease; transition: background 0.3s ease;
+        }
+        .oobe-content img { width: 80px; margin-bottom: 20px; }
+        .oobe-content i { font-size: 80px; margin-bottom: 20px; animation: bounce 2s infinite; }
+        .oobe-content h2 { font-size: 28px; margin-bottom: 10px; }
+        .oobe-content p { font-size: 16px; opacity: 0.9; }
+        
+        .loader {
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top: 4px solid #fff;
+            width: 30px; height: 30px;
+            margin: 20px auto 0 auto;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        @keyframes bounce { 0%, 20%, 50%, 80%, 100% {transform: translateY(0);} 40% {transform: translateY(-20px);} 60% {transform: translateY(-10px);} }
+
+        /* --- AUTH SCREEN --- */
+        .auth-screen { 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark)); 
+            z-index: 2000; display: none;
+            justify-content: center; align-items: center;
+            transition: background 0.3s ease;
+        }
+        .auth-box { background: white; width: 90%; max-width: 400px; padding: 30px; border-radius: 20px; text-align: center; box-shadow: 0 10px 40px rgba(0,0,0,0.2); }
+        .auth-links { margin-top: 15px; font-size: 12px; display: flex; flex-direction: column; gap: 8px; color: #666; }
+        .link-text { text-decoration: underline; cursor: pointer; color: var(--primary-color); font-weight: 600; }
+
+        /* --- DESKTOP MEDIA QUERY --- */
+        @media (min-width: 1024px) {
+            .sidebar { display: flex; }
+            .bottom-nav { display: none !important; }
+            .screen { max-width: 1200px; margin: 0 auto; padding: 40px; }
+            .purple-header { background: none; padding: 0 0 20px 0; color: var(--text-dark); border-radius: 0; text-align: left; }
+            .balance-card { margin: 0 0 30px 0; padding: 40px; }
+            .menu-grid { grid-template-columns: repeat(6, 1fr); gap: 30px; padding: 0; }
+            .info-card { max-width: 600px; margin: 20px auto; }
+            .mobile-logout-btn { display: none; }
+        }
+
+        /* --- BOTTOM NAV (MOBILE) --- */
+        .bottom-nav { position: fixed; bottom: 0; width: 100%; height: 75px; background: white; display: flex; justify-content: space-around; align-items: center; border-top: 1px solid #eee; z-index: 99; }
+        .nav-item { display: flex; flex-direction: column; align-items: center; gap: 5px; color: #9CA3AF; cursor: pointer; }
+        .nav-item.active { color: var(--primary-color); transition: color 0.3s ease; }
+
+        /* --- MODAL --- */
+        .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 999; display: none; justify-content: center; align-items: flex-end; }
+        .modal-content { background: white; width: 100%; padding: 30px; border-radius: 25px 25px 0 0; animation: slideUp 0.3s ease; }
+        @media (min-width: 1024px) { .modal { align-items: center; } .modal-content { width: 400px; border-radius: 25px; } }
+        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+
+    </style>
+</head>
+<body>
+
+<div id="oobeScreen" class="oobe-screen">
+    <div class="oobe-content">
+        <i class="fas fa-piggy-bank"></i>
+        <h2 id="oobeTitle">CelenganKu</h2>
+        <p id="oobeDesc">Memuat aplikasi...</p>
+        <div class="loader" id="oobeLoader"></div>
+    </div>
+</div>
+
+<div id="authScreen" class="auth-screen">
+    <div class="auth-box">
+        <i class="fas fa-piggy-bank" style="font-size: 40px; color: var(--primary-color);"></i>
+        <h2 style="margin: 10px 0;" id="authTitle">Masuk</h2>
+        <p style="font-size: 13px; color: #888; margin-bottom: 20px;" id="authDesc">Silakan masuk ke akunmu</p>
+        
+        <input type="text" id="username" class="form-input" placeholder="Username" style="margin-bottom: 10px;">
+        <input type="password" id="password" class="form-input" placeholder="Password / PIN" style="margin-bottom: 10px;">
+        
+        <button class="btn-save" id="authBtn" onclick="handleAuth()">Masuk</button>
+        <button class="btn-save btn-logout" id="cancelResetBtn" onclick="switchAuthMode('login')" style="display: none; background-color: #eee; color: #555; margin-top: 10px;">Batal</button>
+
+        <div class="auth-links" id="authLinks">
+            <span onclick="switchAuthMode('forgot')" class="link-text" style="color: #666; font-size: 12px;">Lupa Password?</span>
+            <span onclick="switchAuthMode('register')" id="switchText">Belum punya akun? <b class="link-text">Daftar</b></span>
+        </div>
+    </div>
+</div>
+
+<div class="app-container">
+    <nav class="sidebar">
+        <div class="sidebar-logo"><i class="fas fa-piggy-bank"></i> CelenganKu.</div>
+        <div class="sidebar-item active" onclick="showPage('homeScreen')"><i class="fas fa-home"></i> Dashboard</div>
+        <div class="sidebar-item" onclick="showPage('historyScreen')"><i class="fas fa-list-ul"></i> Riwayat</div>
+        <div class="sidebar-item" onclick="showPage('analysisScreen')"><i class="fas fa-chart-pie"></i> Analisis</div>
+        <div class="sidebar-item" onclick="showPage('accountInfoScreen')"><i class="fas fa-user-shield"></i> Akun</div>
+        <div class="sidebar-item" onclick="showPage('gameScreen')"><i class="fas fa-gamepad"></i> Game</div>
+        <div class="sidebar-item" style="color: var(--danger); margin-top: auto;" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Keluar</div>
+    </nav>
+
+    <main class="main-area">
+        <div class="screen-container">
+            
+            <div id="homeScreen" class="screen active">
+                <div class="purple-header">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <div style="font-weight:700; font-size:20px;"><i class="fas fa-piggy-bank"></i> CelenganKu.</div>
+                        <div style="display:flex; align-items:center; gap: 15px;">
+                            <div style="font-weight:600; font-size:14px;">Halo, <span id="userDisplay">User</span></div>
+                            <i class="fas fa-sign-out-alt mobile-logout-btn" onclick="logout()" style="font-size: 22px; cursor: pointer;" title="Keluar"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="balance-card">
+                    <div style="display: flex; justify-content: space-between; color: #666; font-size: 14px;">
+                        <span>Total Tabungan</span>
+                        <i class="fas fa-eye eye-toggle" onclick="toggleBalanceVisibility()"></i>
+                    </div>
+                    <div class="balance-amount displayBalance">Rp 0</div>
+                    <div style="margin-top: 15px; gap: 10px; display: none;" id="desktopQuickActions">
+                         <button class="btn-save" style="width: auto; padding: 8px 20px;" onclick="openModal('in')">Isi Saldo</button>
+                    </div>
+                </div>
+
+                <div class="section-title">Menu Utama</div>
+                <div class="menu-grid">
+                    <div class="action-btn" onclick="openModal('in')">
+                        <div class="icon-box"><i class="fas fa-plus"></i></div><span>Isi Saldo</span>
+                    </div>
+                    <div class="action-btn" onclick="openModal('out')">
+                        <div class="icon-box"><i class="fas fa-arrow-right-from-bracket"></i></div><span>Pengeluaran</span>
+                    </div>
+                    <div class="action-btn" onclick="showPage('historyScreen')">
+                        <div class="icon-box"><i class="fas fa-clock-rotate-left"></i></div><span>Riwayat</span>
+                    </div>
+                    <div class="action-btn" onclick="showPage('analysisScreen')">
+                        <div class="icon-box" style="color:#F59E0B;"><i class="fas fa-chart-pie"></i></div><span>Analisis</span>
+                    </div>
+                    <div class="action-btn" onclick="showPage('accountInfoScreen')">
+                        <div class="icon-box" style="color:#3B82F6;"><i class="fas fa-user-shield"></i></div><span>Cek Akun</span>
+                    </div>
+                    <div class="action-btn" onclick="showPage('gameScreen')">
+                        <div class="icon-box" style="color:#EC4899;"><i class="fas fa-gamepad"></i></div><span>Fun Game</span>
+                    </div>
+                </div>
+            </div>
+
+            <div id="analysisScreen" class="screen">
+                <div class="section-title" style="margin-top:20px;">Analisis Keuangan</div>
+                <div class="info-card" style="text-align:center;">
+                    <canvas id="financeChart" style="max-height:300px; margin-bottom:20px;"></canvas>
+                    <div style="display:flex; justify-content:space-around;">
+                        <div><small>Masuk</small><br><b class="text-success" id="totalInDisplay">Rp 0</b></div>
+                        <div><small>Keluar</small><br><b class="text-danger" id="totalOutDisplay">Rp 0</b></div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="historyScreen" class="screen">
+                <div class="section-title" style="margin-top:20px;">Riwayat Transaksi</div>
+                <div class="info-card">
+                    <ul id="transactionList" style="list-style:none;"></ul>
+                </div>
+            </div>
+
+            <div id="accountInfoScreen" class="screen">
+                <div class="section-title" style="margin-top:20px;">Pengaturan Akun</div>
+                
+                <div class="info-card">
+                    <h4 style="margin-bottom:15px;">Ganti Warna Tema</h4>
+                    <div class="theme-selector">
+                        <div class="theme-btn" style="background:#8B5CF6" onclick="setTheme('#8B5CF6', '#7C3AED')" title="Ungu (Default)"></div>
+                        <div class="theme-btn" style="background:#3B82F6" onclick="setTheme('#3B82F6', '#2563EB')" title="Biru"></div>
+                        <div class="theme-btn" style="background:#10B981" onclick="setTheme('#10B981', '#059669')" title="Hijau"></div>
+                        <div class="theme-btn" style="background:#EC4899" onclick="setTheme('#EC4899', '#DB2777')" title="Pink"></div>
+                        <div class="theme-btn" style="background:#F97316" onclick="setTheme('#F97316', '#EA580C')" title="Oranye"></div>
+                        <div class="theme-btn" style="background:#374151" onclick="setTheme('#374151', '#111827')" title="Hitam"></div>
+                    </div>
+                </div>
+
+                <div class="info-card">
+                    <h4 style="margin-bottom:15px;">Informasi Perangkat</h4>
+                    <div style="font-size:13px; color:#666; border-bottom:1px solid #eee; padding-bottom:10px; margin-bottom:10px;">
+                        Status: <span class="text-success"><i class="fas fa-check-circle"></i> Aman</span>
+                    </div>
+                    <div style="font-size:12px; color:#888;" id="deviceInfo">Chrome - Windows</div>
+                </div>
+
+                <div class="info-card">
+                    <h4 style="margin-bottom:15px;">Ganti Password</h4>
+                    <div class="form-group">
+                        <label>Password Lama</label>
+                        <input type="password" id="oldPass" class="form-input">
+                    </div>
+                    <div class="form-group">
+                        <label>Password Baru</label>
+                        <input type="password" id="newPass" class="form-input">
+                    </div>
+                    <button class="btn-save" onclick="changePassword()">Simpan Password Baru</button>
+                </div>
+
+                <div class="info-card">
+                    <h4 style="margin-bottom:15px; color: var(--danger);">Zona Bahaya</h4>
+                    <p style="font-size:12px; color:#666; margin-bottom:15px;">Tindakan ini akan menghapus seluruh saldo dan riwayat transaksi menjadi awal.</p>
+                    <button class="btn-save" style="background-color: var(--danger);" onclick="resetBalance()">
+                        <i class="fas fa-trash-alt"></i> Reset Saldo ke Awal
+                    </button>
+                </div>
+
+                <div class="info-card" style="text-align: center;">
+                    <button class="btn-save btn-logout" onclick="logout()">
+                        <i class="fas fa-sign-out-alt"></i> Keluar Aplikasi
+                    </button>
+                </div>
+            </div>
+
+            <div id="gameScreen" class="screen">
+                <div class="section-title" style="margin-top:20px; text-align:center;">Flappy Saving</div>
+                <div class="info-card" style="padding: 10px; background: #333;">
+                    <canvas id="gameCanvas" width="320" height="480"></canvas>
+                </div>
+                <div class="game-overlay">
+                    <h2 id="scoreDisplay">Score: 0</h2>
+                    <p style="font-size: 12px; color: #666; margin-bottom: 10px;">Tekan SPASI atau Klik Layar untuk Lompat</p>
+                    <button class="btn-save" style="width: auto; padding: 10px 40px;" onclick="startGame()">Main / Reset</button>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <div class="bottom-nav">
+        <div class="nav-item active nav-home" onclick="showPage('homeScreen')"><i class="fas fa-house"></i><span>Home</span></div>
+        <div class="nav-item nav-history" onclick="showPage('historyScreen')"><i class="fas fa-list-ul"></i><span>Riwayat</span></div>
+    </div>
+</div>
+
+<div id="transactionModal" class="modal">
+    <div class="modal-content">
+        <h3 id="modalTitle" style="text-align:center; margin-bottom:20px;">Isi Saldo</h3>
+        <input type="tel" id="amountInput" style="width:100%; padding:15px; font-size:24px; text-align:center; border:2px solid #eee; border-radius:15px; margin-bottom:15px; outline:none;" placeholder="Rp 0" oninput="formatInputRupiah(this)">
+        <button class="btn-save" onclick="processTransaction()">Konfirmasi</button>
+        <button style="width:100%; padding:15px; background:none; border:none; margin-top:10px; cursor:pointer;" onclick="closeModal()">Batal</button>
+    </div>
+</div>
+
+<script>
+    // --- STATE ---
+    let currentUser = null;
+    let users = JSON.parse(localStorage.getItem('celengan_users_v3')) || [];
+    let currentAuthMode = 'login';
+    let transactionType = 'in';
+    let isBalanceHidden = localStorage.getItem('balance_hidden') === 'true';
+    let financeChart = null;
+
+    // --- INIT ---
+    window.addEventListener('load', () => {
+        const savedPrimary = localStorage.getItem('theme_primary');
+        const savedDark = localStorage.getItem('theme_dark');
+        if(savedPrimary && savedDark) {
+            document.documentElement.style.setProperty('--primary-color', savedPrimary);
+            document.documentElement.style.setProperty('--primary-dark', savedDark);
+        }
+        showOOBE('startup', '').then(() => {
+            document.getElementById('authScreen').style.display = 'flex';
+        });
+    });
+
+    // --- HELPER THEME ---
+    function setTheme(primary, dark) {
+        document.documentElement.style.setProperty('--primary-color', primary);
+        document.documentElement.style.setProperty('--primary-dark', dark);
+        localStorage.setItem('theme_primary', primary);
+        localStorage.setItem('theme_dark', dark);
+    }
+
+    // --- GAME VARS ---
+    const canvas = document.getElementById("gameCanvas");
+    const ctx = canvas.getContext("2d");
+    let isGameRunning = false, frames = 0, score = 0;
+    const bird = { x: 50, y: 150, w: 20, h: 20, speed: 0, gravity: 0.25, jump: 4.6 };
+    const pipes = { position: [], w: 40, h: 0, dx: 2, gap: 100, maxYPos: -150 };
+
+    const formatRupiah = (n) => new Intl.NumberFormat('id-ID', {style:'currency', currency:'IDR', minimumFractionDigits:0}).format(n);
+    const formatDate = (s) => new Date(s).toLocaleDateString('id-ID', {day:'numeric', month:'short', hour:'2-digit', minute:'2-digit'});
+
+    // --- OOBE / SPLASH ---
+    function showOOBE(type, name) {
+        const oobe = document.getElementById('oobeScreen');
+        const title = document.getElementById('oobeTitle');
+        const desc = document.getElementById('oobeDesc');
+        const loader = document.getElementById('oobeLoader');
+
+        oobe.style.display = 'flex';
+        loader.style.display = 'block';
+
+        if(type === 'startup') {
+            title.innerText = "CelenganKu";
+            desc.innerText = "Memuat aplikasi...";
+            return new Promise(r => setTimeout(() => { oobe.style.display='none'; r(); }, 2500));
+        } else if(type === 'login') {
+            title.innerText = `Halo, ${name}!`;
+            desc.innerText = "Mempersiapkan akunmu...";
+            return new Promise(r => setTimeout(() => { oobe.style.display='none'; r(); }, 2000));
+        } else {
+            title.innerText = "Sampai Jumpa!";
+            desc.innerText = "Terima kasih telah menabung.";
+            return new Promise(r => setTimeout(() => { oobe.style.display='none'; r(); }, 2000));
+        }
+    }
+
+    // --- AUTH LOGIC ---
+    function switchAuthMode(mode) {
+        currentAuthMode = mode;
+        const title = document.getElementById('authTitle');
+        const desc = document.getElementById('authDesc');
+        const btn = document.getElementById('authBtn');
+        const links = document.getElementById('authLinks');
+        const passInput = document.getElementById('password');
+        const cancelBtn = document.getElementById('cancelResetBtn');
+
+        document.getElementById('username').value = '';
+        passInput.value = '';
+
+        if(mode === 'login') {
+            title.innerText = 'Masuk'; desc.innerText = 'Silakan masuk ke akunmu'; btn.innerText = 'Masuk';
+            links.innerHTML = `<span onclick="switchAuthMode('forgot')" class="link-text" style="color: #666; font-size: 12px;">Lupa Password?</span><span onclick="switchAuthMode('register')">Belum punya akun? <b class="link-text">Daftar</b></span>`;
+            links.style.display = 'flex'; cancelBtn.style.display = 'none'; passInput.placeholder = "Password"; passInput.style.display = 'block';
+        } else if(mode === 'register') {
+            title.innerText = 'Buat Akun'; desc.innerText = 'Daftar untuk mulai menabung'; btn.innerText = 'Daftar';
+            links.innerHTML = `<span onclick="switchAuthMode('login')">Sudah punya akun? <b class="link-text">Masuk</b></span>`;
+            links.style.display = 'flex'; cancelBtn.style.display = 'none'; passInput.placeholder = "Buat Password"; passInput.style.display = 'block';
+        } else if(mode === 'forgot') {
+            title.innerText = 'Reset Password'; desc.innerText = 'Masukkan username & password baru'; btn.innerText = 'Reset Password';
+            passInput.placeholder = "Password Baru"; passInput.style.display = 'block'; links.style.display = 'none'; cancelBtn.style.display = 'block';
+        }
+    }
+
+    function handleAuth() {
+        const u = document.getElementById('username').value.trim();
+        const p = document.getElementById('password').value.trim();
+        if(!u || !p) return alert("Isi data lengkap!");
+
+        if(currentAuthMode === 'register') {
+            if(users.find(x => x.username === u)) return alert("Username sudah terdaftar!");
+            users.push({username:u, password:p, balance:0, transactions:[]});
+            localStorage.setItem('celengan_users_v3', JSON.stringify(users));
+            alert("Berhasil daftar! Silakan masuk."); switchAuthMode('login');
+        } else if (currentAuthMode === 'login') {
+            const user = users.find(x => x.username === u && x.password === p);
+            if(user) {
+                currentUser = user;
+                document.getElementById('authScreen').style.display = 'none';
+                showOOBE('login', u).then(initApp);
+            } else alert("Username atau password salah!");
+        } else if (currentAuthMode === 'forgot') {
+            const userIdx = users.findIndex(x => x.username === u);
+            if(userIdx !== -1) {
+                users[userIdx].password = p;
+                localStorage.setItem('celengan_users_v3', JSON.stringify(users));
+                alert("Password berhasil direset!"); switchAuthMode('login');
+            } else alert("Username tidak ditemukan!");
+        }
+    }
+
+    function logout() { if(confirm("Yakin ingin keluar?")) showOOBE('logout','').then(() => location.reload()); }
+
+    // --- APP CORE ---
+    function initApp() {
+        document.getElementById('authScreen').style.display = 'none';
+        document.getElementById('userDisplay').innerText = currentUser.username;
+        document.getElementById('deviceInfo').innerText = navigator.userAgent;
+        if(window.innerWidth >= 1024) document.getElementById('desktopQuickActions').style.display = 'flex';
+        updateUI(); showPage('homeScreen');
+    }
+
+    function updateUI() {
+        const idx = users.findIndex(u=>u.username===currentUser.username);
+        if(idx!==-1){ users[idx]=currentUser; localStorage.setItem('celengan_users_v3', JSON.stringify(users)); }
+        document.querySelectorAll('.displayBalance').forEach(el => el.innerText = isBalanceHidden ? 'Rp •••••••' : formatRupiah(currentUser.balance));
+    }
+
+    function showPage(pid) {
+        document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+        document.getElementById(pid).classList.add('active');
+        if(pid!=='gameScreen') isGameRunning=false;
+        if(pid==='historyScreen') renderHistory();
+        if(pid==='analysisScreen') renderChart();
+        if(pid==='homeScreen') {
+            document.querySelector('.nav-home').classList.add('active');
+            document.querySelector('.nav-history').classList.remove('active');
+        }
+        if(pid==='historyScreen') {
+            document.querySelector('.nav-home').classList.remove('active');
+            document.querySelector('.nav-history').classList.add('active');
+        }
+    }
+
+    function renderHistory() {
+        const list = document.getElementById('transactionList'); list.innerHTML = '';
+        const sorted = [...currentUser.transactions].sort((a,b)=>new Date(b.date)-new Date(a.date));
+        if(!sorted.length) { list.innerHTML='<li style="text-align:center;padding:20px;color:#999">Kosong</li>'; return; }
+        sorted.forEach(t=>{
+            const isIn = t.type==='in';
+            list.innerHTML += `<li style="display:flex;justify-content:space-between;padding:15px 0;border-bottom:1px solid #eee;"><div><b>${t.desc}</b><br><small style="color:#888">${formatDate(t.date)}</small></div><div class="${isIn?'text-success':'text-danger'}" style="font-weight:700">${isIn?'+':'-'} ${formatRupiah(t.amount)}</div></li>`;
+        });
+    }
+
+    function renderChart() {
+        const tIn = currentUser.transactions.filter(t=>t.type==='in').reduce((a,b)=>a+b.amount,0);
+        const tOut = currentUser.transactions.filter(t=>t.type==='out').reduce((a,b)=>a+b.amount,0);
+        document.getElementById('totalInDisplay').innerText = formatRupiah(tIn);
+        document.getElementById('totalOutDisplay').innerText = formatRupiah(tOut);
+        const ctxC = document.getElementById('financeChart').getContext('2d');
+        if(financeChart) financeChart.destroy();
+        financeChart = new Chart(ctxC, { type: 'doughnut', data: { labels: ['Masuk','Keluar'], datasets: [{ data: (tIn==0&&tOut==0)?[1]:[tIn,tOut], backgroundColor: (tIn==0&&tOut==0)?['#eee']:['#10B981','#EF4444'], borderWidth:0 }] } });
+    }
+
+    function changePassword() {
+        const oldP = document.getElementById('oldPass').value;
+        const newP = document.getElementById('newPass').value;
+        if(oldP !== currentUser.password) return alert("Password lama salah!");
+        if(newP.length < 3) return alert("Password baru terlalu pendek!");
+        currentUser.password = newP; updateUI();
+        document.getElementById('oldPass').value=''; document.getElementById('newPass').value='';
+        alert("Password berhasil diubah!");
+    }
+
+    function resetBalance() {
+        if(confirm("PERINGATAN: Apakah Anda yakin ingin mereset saldo ke Rp 0 dan menghapus semua riwayat transaksi?")) {
+            if(confirm("Yakin sekali lagi? Data yang dihapus tidak bisa dikembalikan!")) {
+                currentUser.balance = 0;
+                currentUser.transactions = [];
+                updateUI();
+                renderHistory(); // update tampilan history
+                alert("Saldo dan Riwayat berhasil direset ke awal.");
+            }
+        }
+    }
+
+    // --- GAME ---
+    function drawBird(){ ctx.fillStyle="#FFD700";ctx.beginPath();ctx.arc(bird.x,bird.y,bird.w/2,0,Math.PI*2);ctx.fill();ctx.strokeStyle="#000";ctx.stroke(); }
+    function drawPipes(){
+        for(let i=0;i<pipes.position.length;i++){
+            let p=pipes.position[i], topY=p.y, botY=p.y+canvas.height+pipes.gap;
+            ctx.fillStyle="#10B981"; ctx.fillRect(p.x,topY,pipes.w,canvas.height); ctx.fillRect(p.x,botY,pipes.w,canvas.height);
+            ctx.strokeStyle="#004d40"; ctx.strokeRect(p.x,topY,pipes.w,canvas.height); ctx.strokeRect(p.x,botY,pipes.w,canvas.height);
+            p.x-=pipes.dx;
+            if(p.x+pipes.w<=0){ pipes.position.shift(); score++; document.getElementById('scoreDisplay').innerText="Score: "+score; }
+            if(bird.x+bird.w/2>p.x && bird.x-bird.w/2<p.x+pipes.w && (bird.y-bird.w/2<topY+canvas.height || bird.y+bird.w/2>botY)) isGameRunning=false;
+        }
+    }
+    function loop(){
+        if(!isGameRunning)return;
+        ctx.fillStyle="#70c5ce";ctx.fillRect(0,0,canvas.width,canvas.height);
+        bird.speed+=bird.gravity; bird.y+=bird.speed;
+        if(bird.y+bird.w/2>=canvas.height) isGameRunning=false;
+        if(frames%100==0) pipes.position.push({x:canvas.width,y:Math.floor(Math.random()*(pipes.maxYPos+1))-100});
+        drawPipes(); drawBird(); frames++; requestAnimationFrame(loop);
+    }
+    function startGame(){ if(isGameRunning)return; bird.y=150;bird.speed=0;pipes.position=[];score=0;frames=0;document.getElementById('scoreDisplay').innerText="Score: 0";isGameRunning=true;loop(); }
+    window.addEventListener("keydown", e=>{ if(e.code==="Space"&&isGameRunning)bird.speed=-bird.jump; });
+    canvas.addEventListener("click", ()=>{ if(isGameRunning)bird.speed=-bird.jump;else startGame(); });
+
+    // --- MODALS ---
+    function openModal(t){ transactionType=t; document.getElementById('modalTitle').innerText=t==='in'?'Isi Saldo':'Catat Pengeluaran'; document.getElementById('transactionModal').style.display='flex'; document.getElementById('amountInput').value=''; document.getElementById('amountInput').focus(); }
+    function closeModal(){ document.getElementById('transactionModal').style.display='none'; }
+    function formatInputRupiah(e){ let v=e.value.replace(/\D/g,''); e.value=v?new Intl.NumberFormat('id-ID').format(v):''; }
+    function processTransaction(){
+        const val=parseInt(document.getElementById('amountInput').value.replace(/\./g,'')||0);
+        if(val<=0)return alert("Nominal salah");
+        if(transactionType==='out'&&val>currentUser.balance)return alert("Saldo kurang!");
+        currentUser.balance+=transactionType==='in'?val:-val;
+        currentUser.transactions.push({type:transactionType,amount:val,date:new Date().toISOString(),desc:transactionType==='in'?'Isi Saldo':'Pengeluaran'});
+        updateUI(); closeModal(); alert("Berhasil!");
+    }
+    function toggleBalanceVisibility(){ isBalanceHidden=!isBalanceHidden; localStorage.setItem('balance_hidden', isBalanceHidden); updateUI(); }
+</script>
+</body>
+</html>
