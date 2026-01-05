@@ -1,11 +1,9 @@
-
-
 <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>CelenganKu v2.0</title>
+    <title>CelenganKu v2.0.4</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -136,13 +134,17 @@
         
         .update-list { text-align: left; font-size: 13px; color: #555; margin-bottom: 20px; padding-left: 20px; }
         .update-list li { margin-bottom: 10px; }
+        
+        /* HELPER FOR AUTH LINKS */
+        .auth-links { margin-top: 20px; display: flex; flex-direction: column; gap: 10px; font-size: 13px; color: var(--text-grey); }
+        .auth-links span { cursor: pointer; }
     </style>
 </head>
 <body>
 
 <div id="oobeScreen" class="oobe-screen">
     <i class="fas fa-piggy-bank" style="font-size: 70px;"></i>
-    <h2 class="oobe-title" id="oobeTitle">CelenganKu</h2>
+    <h2 class="oobe-title" id="oobeTitle">CelenganKu v2.0.4</h2>
     <p class="oobe-desc" id="oobeDesc">Memuat aplikasi...</p>
     <div class="loader"></div>
 </div>
@@ -151,18 +153,20 @@
     <div class="auth-box">
         <i class="fas fa-piggy-bank" style="font-size: 50px; color: var(--primary-color); margin-bottom: 20px;"></i>
         <h2 id="authTitle" style="margin-bottom: 10px; font-weight: 700;">Selamat Datang</h2>
-        <p style="color: var(--text-grey); margin-bottom: 30px; font-size: 14px;">Kelola keuanganmu dengan lebih pintar.</p>
+        <p id="authDesc" style="color: var(--text-grey); margin-bottom: 30px; font-size: 14px;">Kelola keuanganmu dengan lebih pintar.</p>
         
         <input type="text" id="username" class="form-input" placeholder="Username" style="margin-bottom: 15px;">
         <input type="password" id="password" class="form-input" placeholder="Password" style="margin-bottom: 20px;">
         
         <button class="btn-save" onclick="handleAuth()" id="authBtn">Masuk</button>
+        <button class="btn-save btn-outline" onclick="switchAuthMode('login')" id="cancelAuthBtn" style="display:none; margin-top: 10px;">Batal</button>
         
-        <div style="margin-top: 20px; font-size: 13px; color: var(--text-grey);">
-            <span onclick="switchAuthMode()" style="text-decoration: underline; cursor: pointer;">Buat Akun Baru</span>
+        <div class="auth-links" id="authLinks">
+            <span onclick="switchAuthMode('forgot')" style="text-decoration: underline;">Lupa Password?</span>
+            <span onclick="switchAuthMode('register')">Belum punya akun? <b style="color:var(--primary-color)">Daftar</b></span>
         </div>
 
-        <div style="margin-top: 30px; border-top: 1px solid #eee; padding-top: 20px;">
+        <div id="restoreContainer" style="margin-top: 30px; border-top: 1px solid #eee; padding-top: 20px;">
             <button class="btn-save btn-outline" onclick="triggerRestore()">
                 <i class="fas fa-cloud-upload-alt"></i> Restore Data (Pindah HP)
             </button>
@@ -323,6 +327,19 @@
                 </div>
 
                 <div class="info-card">
+                    <h4 style="margin-bottom:15px; font-size:15px;">Ganti Password</h4>
+                    <div class="form-group">
+                        <label>Password Lama</label>
+                        <input type="password" id="oldPass" class="form-input">
+                    </div>
+                    <div class="form-group">
+                        <label>Password Baru</label>
+                        <input type="password" id="newPass" class="form-input">
+                    </div>
+                    <button class="btn-save" onclick="changePassword()">Simpan Password Baru</button>
+                </div>
+
+                <div class="info-card">
                     <h4 style="margin-bottom:15px; font-size:15px;">Personalisasi</h4>
                     <div class="theme-selector">
                         <div class="theme-circle" style="background:#8B5CF6" onclick="setTheme('#8B5CF6', '#7C3AED')"></div>
@@ -393,12 +410,12 @@
 
 <div id="updateNotesModal" class="modal">
     <div class="modal-content">
-        <h3 style="text-align:center; margin-bottom:20px;">Versi 2.0 (Big Update)</h3>
+        <h3 style="text-align:center; margin-bottom:20px;">Versi 2.0.4 (Final Fix)</h3>
         <ul class="update-list">
-            <li><i class="fas fa-star" style="color:var(--primary-color)"></i> <b>Tampilan Baru:</b> Desain lebih bersih mirip Bank Digital.</li>
-            <li><i class="fas fa-wallet" style="color:var(--success)"></i> <b>Fitur Kantong:</b> Pisahkan tabungan utama & jajan.</li>
-            <li><i class="fas fa-sync" style="color:var(--primary-color)"></i> <b>Backup & Restore:</b> Pindahkan data antar HP.</li>
-            <li><i class="fas fa-bug" style="color:var(--danger)"></i> <b>Perbaikan Bug:</b> Fix loading & tampilan desktop.</li>
+            <li><i class="fas fa-check-circle" style="color:var(--success)"></i> <b>Fixed Ganti Password:</b> Menu Akun sudah berfungsi normal.</li>
+            <li><i class="fas fa-check-circle" style="color:var(--success)"></i> <b>Fixed Lupa Password:</b> Tombol di halaman login sudah aman.</li>
+            <li><i class="fas fa-star" style="color:var(--primary-color)"></i> <b>UI Baru:</b> Tampilan Dashboard Modern Style.</li>
+            <li><i class="fas fa-wallet" style="color:var(--primary-color)"></i> <b>Multi-Kantong:</b> Pisahkan dana dengan mudah.</li>
         </ul>
         <button class="btn-save" onclick="document.getElementById('updateNotesModal').style.display='none'">Tutup</button>
     </div>
@@ -461,7 +478,7 @@
         }
     }
 
-    // --- AUTH ---
+    // --- AUTH LOGIC (FIXED FORGOT & CHANGE PASS) ---
     function handleAuth() {
         const u = document.getElementById('username').value.trim();
         const p = document.getElementById('password').value.trim();
@@ -475,25 +492,70 @@
                 document.getElementById('authScreen').style.display = 'none';
                 showOOBE('login', u).then(initApp);
             } else alert("Salah username/password");
-        } else {
+        } else if(currentAuthMode === 'register') {
             if(users.find(x => x.username === u)) return alert("Username ada!");
             users.push({ username:u, password:p, pockets: [{ id: Date.now(), name: "Tabungan Utama", balance: 0, icon: "fa-wallet", color: "#8B5CF6" }], transactions:[] });
             localStorage.setItem('celengan_users_v4', JSON.stringify(users));
-            alert("Daftar sukses!"); switchAuthMode();
+            alert("Daftar sukses!"); switchAuthMode('login');
+        } else if(currentAuthMode === 'forgot') {
+            const user = users.find(x => x.username === u);
+            if(user) {
+                user.password = p; // Reset Password
+                localStorage.setItem('celengan_users_v4', JSON.stringify(users));
+                alert("Password berhasil direset! Silakan login.");
+                switchAuthMode('login');
+            } else alert("Username tidak ditemukan!");
         }
     }
-    function switchAuthMode() {
-        currentAuthMode = currentAuthMode === 'login' ? 'register' : 'login';
-        document.getElementById('authTitle').innerText = currentAuthMode === 'login' ? 'Masuk' : 'Buat Akun';
-        document.getElementById('authBtn').innerText = currentAuthMode === 'login' ? 'Masuk' : 'Daftar';
+
+    function switchAuthMode(mode) {
+        currentAuthMode = mode;
+        const title = document.getElementById('authTitle');
+        const desc = document.getElementById('authDesc');
+        const btn = document.getElementById('authBtn');
+        const links = document.getElementById('authLinks');
+        const cancelBtn = document.getElementById('cancelAuthBtn');
+        const restoreContainer = document.getElementById('restoreContainer');
+        const passInput = document.getElementById('password');
+
+        document.getElementById('username').value = '';
+        passInput.value = '';
+
+        if(mode === 'register') {
+            title.innerText = 'Buat Akun'; desc.innerText = 'Daftar untuk mulai menabung'; btn.innerText = 'Daftar';
+            links.innerHTML = `<span onclick="switchAuthMode('login')">Sudah punya akun? <b style="color:var(--primary-color)">Masuk</b></span>`;
+            cancelBtn.style.display = 'none'; restoreContainer.style.display = 'block'; passInput.placeholder = "Buat Password";
+        } else if(mode === 'forgot') {
+            title.innerText = 'Reset Password'; desc.innerText = 'Masukkan username & password baru'; btn.innerText = 'Simpan Password';
+            links.style.display = 'none'; cancelBtn.style.display = 'block'; restoreContainer.style.display = 'none'; passInput.placeholder = "Password Baru";
+        } else { // Login (default)
+            title.innerText = 'Masuk'; desc.innerText = 'Silakan masuk ke akunmu'; btn.innerText = 'Masuk';
+            links.style.display = 'flex'; links.innerHTML = `<span onclick="switchAuthMode('forgot')" style="text-decoration: underline;">Lupa Password?</span><span onclick="switchAuthMode('register')">Belum punya akun? <b style="color:var(--primary-color)">Daftar</b></span>`;
+            cancelBtn.style.display = 'none'; restoreContainer.style.display = 'block'; passInput.placeholder = "Password";
+        }
     }
+
+    function changePassword() {
+        const oldP = document.getElementById('oldPass').value;
+        const newP = document.getElementById('newPass').value;
+        if(oldP !== currentUser.password) return alert("Password lama salah!");
+        if(newP.length < 3) return alert("Password baru terlalu pendek!");
+        currentUser.password = newP; 
+        // Update user in array
+        const idx = users.findIndex(u=>u.username===currentUser.username);
+        if(idx!==-1) { users[idx]=currentUser; localStorage.setItem('celengan_users_v4', JSON.stringify(users)); }
+        
+        document.getElementById('oldPass').value=''; document.getElementById('newPass').value='';
+        alert("Password berhasil diubah!");
+    }
+
     function logout() { if(confirm("Yakin ingin keluar?")) showOOBE('logout','').then(() => location.reload()); }
 
     // --- UPDATE & DONASI ---
     function checkUpdate() {
-        if(!localStorage.getItem('update_seen_v2.0')) {
-            localStorage.setItem('update_seen_v2.0', 'true');
-            // document.getElementById('updateNotesModal').style.display = 'flex'; // Optional auto show
+        if(!localStorage.getItem('update_seen_v2.0.4')) {
+            localStorage.setItem('update_seen_v2.0.4', 'true');
+            document.getElementById('updateNotesModal').style.display = 'flex';
         }
     }
     function showUpdateNotes() { document.getElementById('updateNotesModal').style.display = 'flex'; }
