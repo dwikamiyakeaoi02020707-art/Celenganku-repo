@@ -1,9 +1,10 @@
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>CelenganKu v2.0.4</title>
+    <title>CelenganKu v2.1.0</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -23,7 +24,7 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; -webkit-tap-highlight-color: transparent; }
         body { background-color: var(--bg-color); height: 100vh; overflow: hidden; display: flex; }
 
-        /* --- LAYOUT UTAMA --- */
+        /* --- LAYOUT --- */
         .app-container { width: 100%; height: 100%; display: flex; flex-direction: column; background: #F8F9FA; position: relative; }
         .sidebar { display: none; }
         .main-area { flex: 1; position: relative; overflow: hidden; display: flex; flex-direction: column; }
@@ -48,11 +49,20 @@
         .asset-header { padding: 40px 20px 15px 20px; background: white; border-bottom: 1px solid #f0f0f0; }
         .asset-title { font-size: 24px; font-weight: 700; color: var(--text-dark); }
         .pockets-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 20px; }
+        
         .pocket-item { padding: 20px; border-radius: 20px; display: flex; flex-direction: column; justify-content: space-between; min-height: 140px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); cursor: pointer; position: relative; overflow: hidden; }
+        
         .pocket-main { background: #F3E8FF; border: 1px solid #E9D5FF; }
         .pocket-main .pocket-icon-small { background: var(--primary-color); color: white; }
+        
         .pocket-regular { background: white; border: 1px solid #F3F4F6; }
         .pocket-regular .pocket-icon-small { background: #F3F4F6; color: var(--text-dark); }
+        
+        /* Style Kantong Hutang */
+        .pocket-debt { background: #FEF2F2; border: 1px solid #FECACA; }
+        .pocket-debt .pocket-icon-small { background: #FEE2E2; color: var(--danger); }
+        .debt-badge { font-size: 10px; background: var(--danger); color: white; padding: 2px 6px; border-radius: 4px; display: inline-block; margin-bottom: 5px; }
+
         .pocket-icon-small { width: 45px; height: 45px; border-radius: 14px; display: flex; justify-content: center; align-items: center; font-size: 20px; margin-bottom: 15px; }
         .pocket-name-text { font-size: 13px; font-weight: 600; color: var(--text-grey); margin-bottom: 4px; }
         .pocket-bal-text { font-size: 16px; font-weight: 700; color: var(--text-dark); }
@@ -72,10 +82,20 @@
         .section-title { padding: 0 25px; margin-bottom: 15px; font-weight: 700; color: var(--text-dark); font-size: 16px; }
         .info-card { background: white; margin: 20px; padding: 25px; border-radius: 24px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); }
         .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; font-size: 12px; color: var(--text-grey); margin-bottom: 5px; font-weight: 500;}
         .form-input, .form-select { width: 100%; padding: 16px; border: 1px solid #eee; border-radius: 14px; outline: none; background: #F9FAFB; font-size: 15px; }
         .btn-save { width: 100%; padding: 16px; background: var(--primary-color); color: white; border: none; border-radius: 14px; font-weight: 600; cursor: pointer; font-size: 15px; }
         .btn-outline { background: white; color: var(--text-grey); border: 1px solid #ddd; }
         .btn-danger { background: var(--danger); color: white; }
+
+        /* Password Wrapper for Eye Icon */
+        .password-wrapper { position: relative; width: 100%; }
+        .password-toggle-icon { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: #9CA3AF; cursor: pointer; font-size: 18px; }
+
+        /* Radio Group for Pocket Type */
+        .radio-group { display: flex; gap: 10px; margin-bottom: 15px; }
+        .radio-option { flex: 1; padding: 10px; border: 1px solid #eee; border-radius: 10px; text-align: center; cursor: pointer; font-size: 13px; color: #666; }
+        .radio-option.selected { border-color: var(--primary-color); background: #F3E8FF; color: var(--primary-color); font-weight: 600; }
 
         /* --- BOTTOM NAV --- */
         .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; height: 80px; background: white; display: flex; justify-content: space-around; align-items: center; border-top: 1px solid #eee; z-index: 99; padding-bottom: 10px; }
@@ -135,7 +155,6 @@
         .update-list { text-align: left; font-size: 13px; color: #555; margin-bottom: 20px; padding-left: 20px; }
         .update-list li { margin-bottom: 10px; }
         
-        /* HELPER FOR AUTH LINKS */
         .auth-links { margin-top: 20px; display: flex; flex-direction: column; gap: 10px; font-size: 13px; color: var(--text-grey); }
         .auth-links span { cursor: pointer; }
     </style>
@@ -144,7 +163,7 @@
 
 <div id="oobeScreen" class="oobe-screen">
     <i class="fas fa-piggy-bank" style="font-size: 70px;"></i>
-    <h2 class="oobe-title" id="oobeTitle">CelenganKu v2.0.4</h2>
+    <h2 class="oobe-title" id="oobeTitle">CelenganKu v2.1.0</h2>
     <p class="oobe-desc" id="oobeDesc">Memuat aplikasi...</p>
     <div class="loader"></div>
 </div>
@@ -156,7 +175,11 @@
         <p id="authDesc" style="color: var(--text-grey); margin-bottom: 30px; font-size: 14px;">Kelola keuanganmu dengan lebih pintar.</p>
         
         <input type="text" id="username" class="form-input" placeholder="Username" style="margin-bottom: 15px;">
-        <input type="password" id="password" class="form-input" placeholder="Password" style="margin-bottom: 20px;">
+        
+        <div class="password-wrapper" style="margin-bottom: 20px;">
+            <input type="password" id="password" class="form-input" placeholder="Password">
+            <i class="fas fa-eye password-toggle-icon" onclick="togglePasswordVisibility('password', this)"></i>
+        </div>
         
         <button class="btn-save" onclick="handleAuth()" id="authBtn">Masuk</button>
         <button class="btn-save btn-outline" onclick="switchAuthMode('login')" id="cancelAuthBtn" style="display:none; margin-top: 10px;">Batal</button>
@@ -251,6 +274,7 @@
                         Total Seluruh Aset <i class="fas fa-eye eye-toggle" onclick="toggleBalanceVisibility()"></i>
                     </div>
                     <div class="balance-amount" id="assetTotalBalance">Rp 0</div>
+                    <div style="font-size: 11px; color: var(--text-grey); margin-top:5px;">*Kantong Hutang tidak dihitung</div>
                 </div>
 
                 <div class="section-title">Daftar Kantong</div>
@@ -290,12 +314,14 @@
                 
                 <div style="padding: 25px;">
                     <h4 style="font-size: 16px; margin-bottom: 20px; font-weight: 700;">Riwayat Transaksi Kantong Ini</h4>
+                    <p style="font-size:11px; color:#888; margin-bottom:10px;">Klik transaksi untuk Edit/Hapus</p>
                     <ul id="pocketHistoryList" style="list-style: none;"></ul>
                 </div>
             </div>
 
             <div id="historyScreen" class="screen">
                 <div class="section-title" style="margin-top: 25px;">Semua Riwayat</div>
+                <div style="padding: 0 25px; font-size:11px; color:#888; margin-bottom:10px;">Klik transaksi untuk Edit/Hapus</div>
                 <div class="info-card">
                     <ul id="globalTransactionList" style="list-style: none;"></ul>
                 </div>
@@ -328,13 +354,21 @@
 
                 <div class="info-card">
                     <h4 style="margin-bottom:15px; font-size:15px;">Ganti Password</h4>
+                    
                     <div class="form-group">
                         <label>Password Lama</label>
-                        <input type="password" id="oldPass" class="form-input">
+                        <div class="password-wrapper">
+                            <input type="password" id="oldPass" class="form-input">
+                            <i class="fas fa-eye password-toggle-icon" onclick="togglePasswordVisibility('oldPass', this)"></i>
+                        </div>
                     </div>
+                    
                     <div class="form-group">
                         <label>Password Baru</label>
-                        <input type="password" id="newPass" class="form-input">
+                        <div class="password-wrapper">
+                            <input type="password" id="newPass" class="form-input">
+                            <i class="fas fa-eye password-toggle-icon" onclick="togglePasswordVisibility('newPass', this)"></i>
+                        </div>
                     </div>
                     <button class="btn-save" onclick="changePassword()">Simpan Password Baru</button>
                 </div>
@@ -389,9 +423,28 @@
     </div>
 </div>
 
+<div id="transactionActionModal" class="modal">
+    <div class="modal-content">
+        <h3 style="text-align:center; margin-bottom:15px;">Aksi Transaksi</h3>
+        <p style="text-align:center; color:#666; margin-bottom:20px; font-size:13px;">Apa yang ingin kamu lakukan pada transaksi ini?</p>
+        
+        <div style="display:flex; gap:10px;">
+            <button class="btn-save" onclick="editSelectedTransaction()">Edit Nominal</button>
+            <button class="btn-save btn-danger" onclick="deleteSelectedTransaction()">Hapus</button>
+        </div>
+        <button class="btn-save btn-outline" style="margin-top: 10px; border:none;" onclick="document.getElementById('transactionActionModal').style.display='none'">Batal</button>
+    </div>
+</div>
+
 <div id="addPocketModal" class="modal">
     <div class="modal-content">
         <h3 style="text-align:center; margin-bottom:20px;">Kantong Baru</h3>
+        
+        <div class="radio-group">
+            <div class="radio-option selected" id="optRegular" onclick="selectPocketType('regular')">Tabungan</div>
+            <div class="radio-option" id="optDebt" onclick="selectPocketType('debt')">Hutang/Cicilan</div>
+        </div>
+
         <input type="text" id="newPocketName" class="form-input" placeholder="Nama Kantong (misal: Jajan)" style="margin-bottom: 15px;">
         <div class="form-group">
             <label>Pilih Ikon</label>
@@ -410,12 +463,12 @@
 
 <div id="updateNotesModal" class="modal">
     <div class="modal-content">
-        <h3 style="text-align:center; margin-bottom:20px;">Versi 2.0.4 (Final Fix)</h3>
+        <h3 style="text-align:center; margin-bottom:20px;">Update v2.1.0</h3>
         <ul class="update-list">
-            <li><i class="fas fa-check-circle" style="color:var(--success)"></i> <b>Fixed Ganti Password:</b> Menu Akun sudah berfungsi normal.</li>
-            <li><i class="fas fa-check-circle" style="color:var(--success)"></i> <b>Fixed Lupa Password:</b> Tombol di halaman login sudah aman.</li>
-            <li><i class="fas fa-star" style="color:var(--primary-color)"></i> <b>UI Baru:</b> Tampilan Dashboard Modern Style.</li>
-            <li><i class="fas fa-wallet" style="color:var(--primary-color)"></i> <b>Multi-Kantong:</b> Pisahkan dana dengan mudah.</li>
+            <li><i class="fas fa-edit" style="color:var(--primary-color)"></i> <b>Edit/Hapus Transaksi:</b> Klik riwayat untuk ubah.</li>
+            <li><i class="fas fa-receipt" style="color:var(--danger)"></i> <b>Kantong Hutang:</b> Pisahkan hutang dari aset total.</li>
+            <li><i class="fas fa-eye" style="color:var(--success)"></i> <b>Intip Password:</b> Tombol mata sudah kembali.</li>
+            <li><i class="fas fa-bug" style="color:var(--danger)"></i> <b>Bug Fixes:</b> Perbaikan fitur restore & UI.</li>
         </ul>
         <button class="btn-save" onclick="document.getElementById('updateNotesModal').style.display='none'">Tutup</button>
     </div>
@@ -431,12 +484,13 @@
     let transactionType = 'in';
     let isBalanceHidden = localStorage.getItem('balance_hidden') === 'true';
     let currentPocketId = null; 
-    let tempNewPocket = { icon: 'fa-wallet', color: '#8B5CF6' };
+    let tempNewPocket = { icon: 'fa-wallet', color: '#8B5CF6', type: 'regular' };
     let financeChart = null;
+    let selectedTransactionId = null; // For editing/deleting
 
     // --- INIT ---
     window.addEventListener('load', () => {
-        // Migration Check
+        // Migration V3 -> V4
         if(users.length === 0 && localStorage.getItem('celengan_users_v3')) {
             try {
                 let oldData = JSON.parse(localStorage.getItem('celengan_users_v3'));
@@ -541,7 +595,6 @@
         if(oldP !== currentUser.password) return alert("Password lama salah!");
         if(newP.length < 3) return alert("Password baru terlalu pendek!");
         currentUser.password = newP; 
-        // Update user in array
         const idx = users.findIndex(u=>u.username===currentUser.username);
         if(idx!==-1) { users[idx]=currentUser; localStorage.setItem('celengan_users_v4', JSON.stringify(users)); }
         
@@ -549,12 +602,25 @@
         alert("Password berhasil diubah!");
     }
 
+    function togglePasswordVisibility(inputId, icon) {
+        const input = document.getElementById(inputId);
+        if(input.type === "password") {
+            input.type = "text";
+            icon.classList.remove("fa-eye");
+            icon.classList.add("fa-eye-slash");
+        } else {
+            input.type = "password";
+            icon.classList.remove("fa-eye-slash");
+            icon.classList.add("fa-eye");
+        }
+    }
+
     function logout() { if(confirm("Yakin ingin keluar?")) showOOBE('logout','').then(() => location.reload()); }
 
     // --- UPDATE & DONASI ---
     function checkUpdate() {
-        if(!localStorage.getItem('update_seen_v2.0.4')) {
-            localStorage.setItem('update_seen_v2.0.4', 'true');
+        if(!localStorage.getItem('update_seen_v2.1.0')) {
+            localStorage.setItem('update_seen_v2.1.0', 'true');
             document.getElementById('updateNotesModal').style.display = 'flex';
         }
     }
@@ -601,7 +667,10 @@
         const mainPocket = currentUser.pockets[0] || {balance:0};
         document.getElementById('homeMainBalance').innerText = isBalanceHidden ? 'Rp •••••••' : formatRupiah(mainPocket.balance);
 
-        const total = currentUser.pockets.reduce((a,b) => a + b.balance, 0);
+        // Calculate Asset (Exclude Debt)
+        const total = currentUser.pockets.reduce((a,b) => {
+            return (b.type !== 'debt') ? a + b.balance : a;
+        }, 0);
         document.getElementById('assetTotalBalance').innerText = isBalanceHidden ? 'Rp •••••••' : formatRupiah(total);
 
         renderAssetGrid();
@@ -612,13 +681,23 @@
         const grid = document.getElementById('pocketGrid'); grid.innerHTML = '';
         currentUser.pockets.forEach(p => {
             const isMain = p.name === "Tabungan Utama";
-            const el = document.createElement('div');
-            el.className = isMain ? 'pocket-item pocket-main' : 'pocket-item pocket-regular';
-            const iconColor = isMain ? 'white' : p.color;
+            const isDebt = p.type === 'debt';
             
+            let cardClass = isMain ? 'pocket-item pocket-main' : 'pocket-item pocket-regular';
+            if(isDebt) cardClass = 'pocket-item pocket-debt';
+            
+            const iconColor = isMain ? 'white' : p.color;
+            const badge = isDebt ? '<span class="debt-badge">Hutang</span>' : '';
+            
+            const el = document.createElement('div');
+            el.className = cardClass;
             el.innerHTML = `
                 <div class="pocket-icon-small" style="color: ${iconColor}"><i class="fas ${p.icon}"></i></div>
-                <div><div class="pocket-name-text">${p.name}</div><div class="pocket-bal-text">${isBalanceHidden ? '•••••' : formatRupiah(p.balance)}</div></div>
+                <div>
+                    ${badge}
+                    <div class="pocket-name-text">${p.name}</div>
+                    <div class="pocket-bal-text">${isBalanceHidden ? '•••••' : formatRupiah(p.balance)}</div>
+                </div>
             `;
             el.onclick = () => { showPage('pocketDetailScreen'); loadPocketDetail(p.id); };
             grid.appendChild(el);
@@ -652,10 +731,17 @@
         
         if(pTrans.length === 0) list.innerHTML = '<li style="text-align:center; color:#999; font-size:12px;">Belum ada transaksi</li>';
         else pTrans.forEach(t => {
-            list.innerHTML += `<li style="display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid #f0f0f0;font-size:13px;">
+            // Assign ID if missing (for legacy data)
+            if(!t.id) t.id = Date.now() + Math.random();
+            
+            const item = document.createElement('li');
+            item.style.cssText = "display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid #f0f0f0;font-size:13px;cursor:pointer;";
+            item.innerHTML = `
                 <div>${t.desc}<br><span style="font-size:10px;color:#999">${formatDate(t.date)}</span></div>
                 <div class="${t.type==='in'?'text-success':'text-danger'}" style="font-weight:600">${t.type==='in'?'+':'-'} ${formatRupiah(t.amount)}</div>
-            </li>`;
+            `;
+            item.onclick = () => openTransactionAction(t.id);
+            list.appendChild(item);
         });
     }
 
@@ -676,7 +762,7 @@
     }
     function goBackToPrevious() { showPage('assetScreen'); }
 
-    // --- TRANSACTIONS ---
+    // --- TRANSACTIONS & POCKETS ---
     function openModal(type, specificPocketId = null) {
         transactionType = type;
         document.getElementById('modalTitle').innerText = type==='in' ? 'Isi Saldo' : 'Catat Pengeluaran';
@@ -697,18 +783,113 @@
         if(transactionType === 'out' && val > pocket.balance) return alert("Saldo kurang!");
 
         pocket.balance += transactionType === 'in' ? val : -val;
-        currentUser.transactions.push({ type:transactionType, amount:val, pocketId:pid, date:new Date().toISOString(), desc:transactionType==='in'?'Isi Saldo':'Pengeluaran' });
+        currentUser.transactions.push({ 
+            id: Date.now(), 
+            type:transactionType, 
+            amount:val, 
+            pocketId:pid, 
+            date:new Date().toISOString(), 
+            desc:transactionType==='in'?'Isi Saldo':'Pengeluaran' 
+        });
         
         updateUI(); document.getElementById('transactionModal').style.display = 'none';
+    }
+
+    // --- EDIT & DELETE TRANSACTIONS (NEW) ---
+    function openTransactionAction(tid) {
+        selectedTransactionId = tid;
+        document.getElementById('transactionActionModal').style.display = 'flex';
+    }
+
+    function deleteSelectedTransaction() {
+        if(!selectedTransactionId) return;
+        
+        const txIndex = currentUser.transactions.findIndex(t => t.id === selectedTransactionId);
+        if(txIndex === -1) return;
+        const tx = currentUser.transactions[txIndex];
+        const pocket = currentUser.pockets.find(p => p.id === tx.pocketId);
+
+        if(confirm("Hapus transaksi ini? Saldo akan dikembalikan.")) {
+            // Revert balance
+            if(pocket) {
+                if(tx.type === 'in') pocket.balance -= tx.amount;
+                else pocket.balance += tx.amount;
+            }
+            // Remove transaction
+            currentUser.transactions.splice(txIndex, 1);
+            updateUI();
+            
+            // Refresh views
+            if(document.getElementById('pocketDetailScreen').classList.contains('active')) loadPocketDetail(pocket.id);
+            if(document.getElementById('historyScreen').classList.contains('active')) renderGlobalHistory();
+            
+            document.getElementById('transactionActionModal').style.display = 'none';
+        }
+    }
+
+    function editSelectedTransaction() {
+        if(!selectedTransactionId) return;
+        
+        const txIndex = currentUser.transactions.findIndex(t => t.id === selectedTransactionId);
+        if(txIndex === -1) return;
+        const tx = currentUser.transactions[txIndex];
+        const pocket = currentUser.pockets.find(p => p.id === tx.pocketId);
+
+        const newAmountStr = prompt("Masukkan nominal baru (tanpa titik):", tx.amount);
+        if(!newAmountStr) return;
+        
+        const newAmount = parseInt(newAmountStr);
+        if(isNaN(newAmount) || newAmount <= 0) return alert("Nominal tidak valid");
+
+        // Revert old balance
+        if(pocket) {
+            if(tx.type === 'in') pocket.balance -= tx.amount;
+            else pocket.balance += tx.amount;
+            
+            // Apply new balance
+            if(tx.type === 'in') pocket.balance += newAmount;
+            else {
+                if(newAmount > pocket.balance) {
+                    // Undo revert if failed
+                    pocket.balance -= tx.amount; 
+                    return alert("Saldo tidak cukup untuk nominal baru!");
+                }
+                pocket.balance -= newAmount;
+            }
+        }
+
+        tx.amount = newAmount;
+        updateUI();
+        
+        // Refresh views
+        if(document.getElementById('pocketDetailScreen').classList.contains('active')) loadPocketDetail(pocket.id);
+        if(document.getElementById('historyScreen').classList.contains('active')) renderGlobalHistory();
+        
+        document.getElementById('transactionActionModal').style.display = 'none';
+    }
+
+    // --- POCKET CREATION ---
+    function selectPocketType(type) {
+        tempNewPocket.type = type;
+        document.getElementById('optRegular').classList.toggle('selected', type==='regular');
+        document.getElementById('optDebt').classList.toggle('selected', type==='debt');
     }
 
     function createNewPocket() {
         const name = document.getElementById('newPocketName').value;
         if(!name) return;
-        currentUser.pockets.push({ id:Date.now(), name:name, balance:0, icon:tempNewPocket.icon, color:tempNewPocket.color });
+        currentUser.pockets.push({ 
+            id:Date.now(), 
+            name:name, 
+            balance:0, 
+            icon:tempNewPocket.icon, 
+            color:tempNewPocket.color,
+            type: tempNewPocket.type || 'regular'
+        });
         updateUI(); document.getElementById('addPocketModal').style.display = 'none';
     }
-    function selectPocketIcon(icon, color) { tempNewPocket = { icon, color }; }
+    function selectPocketIcon(icon, color) { tempNewPocket.icon = icon; tempNewPocket.color = color; }
+    
     function deleteCurrentPocket() {
         if(currentPocketId === currentUser.pockets[0].id) return alert("Tabungan Utama tidak bisa dihapus!");
         if(confirm("Hapus kantong ini?")) {
@@ -723,11 +904,17 @@
         const sorted = [...currentUser.transactions].sort((a,b)=>new Date(b.date)-new Date(a.date));
         if(!sorted.length) list.innerHTML = '<li style="text-align:center;padding:20px;color:#999">Belum ada transaksi</li>';
         else sorted.forEach(t => {
+            if(!t.id) t.id = Date.now() + Math.random();
             const pName = currentUser.pockets.find(p => p.id == t.pocketId)?.name || 'Dihapus';
-            list.innerHTML += `<li style="display:flex;justify-content:space-between;padding:15px;border-bottom:1px solid #f0f0f0;">
+            
+            const item = document.createElement('li');
+            item.style.cssText = "display:flex;justify-content:space-between;padding:15px;border-bottom:1px solid #f0f0f0;cursor:pointer;";
+            item.innerHTML = `
                 <div><b>${t.desc}</b> <span style="font-size:10px;background:#f3f4f6;padding:2px 5px;border-radius:4px;">${pName}</span><br><small style="color:#888">${formatDate(t.date)}</small></div>
                 <div class="${t.type==='in'?'text-success':'text-danger'}" style="font-weight:600">${t.type==='in'?'+':'-'} ${formatRupiah(t.amount)}</div>
-            </li>`;
+            `;
+            item.onclick = () => openTransactionAction(t.id);
+            list.appendChild(item);
         });
     }
     function renderChart() {
