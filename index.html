@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>CelenganKu v2.1.0</title>
+    <title>CelenganKu v2.1.3 Stable</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -21,19 +21,71 @@
             --sidebar-width: 280px;
         }
 
+        /* RESET & LOCK BODY SCROLL */
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; -webkit-tap-highlight-color: transparent; }
-        body { background-color: var(--bg-color); height: 100vh; overflow: hidden; display: flex; }
+        
+        body { 
+            background-color: var(--bg-color); 
+            width: 100vw; 
+            height: 100vh; 
+            overflow: hidden; /* Mencegah overscroll pada body utama */
+            display: flex; 
+            position: fixed; /* Kunci posisi body */
+        }
 
-        /* --- LAYOUT --- */
-        .app-container { width: 100%; height: 100%; display: flex; flex-direction: column; background: #F8F9FA; position: relative; }
+        /* --- LAYOUT UTAMA --- */
+        .app-container { 
+            width: 100%; 
+            height: 100%; 
+            display: flex; 
+            flex-direction: column; 
+            background: #F8F9FA; 
+            position: relative; 
+        }
+
         .sidebar { display: none; }
-        .main-area { flex: 1; position: relative; overflow: hidden; display: flex; flex-direction: column; }
-        .screen-container { flex: 1; overflow-y: auto; padding-bottom: 90px; scrollbar-width: none; }
+
+        .main-area { 
+            flex: 1; 
+            position: relative; 
+            overflow: hidden; 
+            display: flex; 
+            flex-direction: column;
+            height: 100%;
+        }
+        
+        /* SCROLLABLE AREA */
+        .screen-container { 
+            flex: 1; 
+            overflow-y: auto; /* Scroll hanya di sini */
+            overflow-x: hidden;
+            padding-bottom: 100px; /* Ruang untuk navbar */
+            -webkit-overflow-scrolling: touch; /* Smooth scroll iOS */
+        }
         .screen-container::-webkit-scrollbar { display: none; }
 
-        /* --- HEADER & CARDS --- */
-        .purple-header { background: linear-gradient(180deg, var(--primary-color) 0%, var(--primary-dark) 100%); padding: 40px 25px 90px 25px; color: white; border-bottom-left-radius: 30px; border-bottom-right-radius: 30px; position: relative; z-index: 1; }
-        .balance-card { background: white; margin: -70px 20px 25px 20px; padding: 25px; border-radius: 24px; box-shadow: 0 8px 20px rgba(0,0,0,0.06); position: relative; z-index: 2; }
+        /* --- HEADER & CARDS (Desain Awal) --- */
+        .purple-header { 
+            background: linear-gradient(180deg, var(--primary-color) 0%, var(--primary-dark) 100%); 
+            padding: 40px 25px 90px 25px; 
+            color: white; 
+            border-bottom-left-radius: 30px; 
+            border-bottom-right-radius: 30px; 
+            position: relative; 
+            z-index: 1; 
+            flex-shrink: 0;
+        }
+        
+        .balance-card { 
+            background: white; 
+            margin: -70px 20px 25px 20px; 
+            padding: 25px; 
+            border-radius: 24px; 
+            box-shadow: 0 8px 20px rgba(0,0,0,0.06); 
+            position: relative; 
+            z-index: 2; 
+        }
+        
         .balance-label { font-size: 13px; color: var(--text-grey); font-weight: 500; display: flex; align-items: center; gap: 8px; }
         .balance-amount { font-size: 30px; font-weight: 700; color: var(--text-dark); margin: 12px 0 5px 0; letter-spacing: -0.5px; line-height: 1.2; }
         .detail-btn { background: #F3E8FF; color: var(--primary-color); padding: 6px 16px; border-radius: 20px; font-size: 12px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 5px; }
@@ -49,20 +101,14 @@
         .asset-header { padding: 40px 20px 15px 20px; background: white; border-bottom: 1px solid #f0f0f0; }
         .asset-title { font-size: 24px; font-weight: 700; color: var(--text-dark); }
         .pockets-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 20px; }
-        
-        .pocket-item { padding: 20px; border-radius: 20px; display: flex; flex-direction: column; justify-content: space-between; min-height: 140px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); cursor: pointer; position: relative; overflow: hidden; }
-        
+        .pocket-item { padding: 20px; border-radius: 20px; display: flex; flex-direction: column; justify-content: space-between; min-height: 140px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); cursor: pointer; position: relative; overflow: hidden; background: white; }
         .pocket-main { background: #F3E8FF; border: 1px solid #E9D5FF; }
         .pocket-main .pocket-icon-small { background: var(--primary-color); color: white; }
-        
         .pocket-regular { background: white; border: 1px solid #F3F4F6; }
         .pocket-regular .pocket-icon-small { background: #F3F4F6; color: var(--text-dark); }
-        
-        /* Style Kantong Hutang */
         .pocket-debt { background: #FEF2F2; border: 1px solid #FECACA; }
         .pocket-debt .pocket-icon-small { background: #FEE2E2; color: var(--danger); }
         .debt-badge { font-size: 10px; background: var(--danger); color: white; padding: 2px 6px; border-radius: 4px; display: inline-block; margin-bottom: 5px; }
-
         .pocket-icon-small { width: 45px; height: 45px; border-radius: 14px; display: flex; justify-content: center; align-items: center; font-size: 20px; margin-bottom: 15px; }
         .pocket-name-text { font-size: 13px; font-weight: 600; color: var(--text-grey); margin-bottom: 4px; }
         .pocket-bal-text { font-size: 16px; font-weight: 700; color: var(--text-dark); }
@@ -74,8 +120,11 @@
         .big-pocket-icon { width: 90px; height: 90px; border-radius: 28px; margin: 0 auto 20px auto; display: flex; justify-content: center; align-items: center; font-size: 45px; color: white; box-shadow: 0 15px 30px rgba(139, 92, 246, 0.2); }
         .detail-pocket-name { font-size: 15px; font-weight: 600; color: var(--text-grey); margin-bottom: 5px; }
         .detail-pocket-bal { font-size: 32px; font-weight: 700; color: var(--text-dark); margin-bottom: 30px; letter-spacing: -0.5px; line-height: 1.2; }
-        .detail-actions { display: flex; justify-content: center; gap: 40px; margin-top: 30px; }
-        .detail-action-btn { display: flex; flex-direction: column; align-items: center; gap: 10px; cursor: pointer; }
+        .debt-split-display { display: flex; justify-content: center; align-items: baseline; gap: 5px; color: var(--text-dark); font-weight: 700; font-size: 24px; margin-bottom: 30px;}
+        .debt-current { color: var(--text-dark); }
+        .debt-target { color: #9CA3AF; font-size: 20px; }
+        .detail-actions { display: flex; justify-content: center; gap: 30px; margin-top: 30px; flex-wrap: wrap; }
+        .detail-action-btn { display: flex; flex-direction: column; align-items: center; gap: 10px; cursor: pointer; min-width: 60px; }
         .detail-icon-circle { width: 55px; height: 55px; border-radius: 50%; background: #F8F9FA; display: flex; justify-content: center; align-items: center; font-size: 22px; color: var(--primary-color); border: 1px solid #eee; }
 
         /* --- UTILS --- */
@@ -87,24 +136,28 @@
         .btn-save { width: 100%; padding: 16px; background: var(--primary-color); color: white; border: none; border-radius: 14px; font-weight: 600; cursor: pointer; font-size: 15px; }
         .btn-outline { background: white; color: var(--text-grey); border: 1px solid #ddd; }
         .btn-danger { background: var(--danger); color: white; }
-
-        /* Password Wrapper for Eye Icon */
         .password-wrapper { position: relative; width: 100%; }
         .password-toggle-icon { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: #9CA3AF; cursor: pointer; font-size: 18px; }
-
-        /* Radio Group for Pocket Type */
         .radio-group { display: flex; gap: 10px; margin-bottom: 15px; }
         .radio-option { flex: 1; padding: 10px; border: 1px solid #eee; border-radius: 10px; text-align: center; cursor: pointer; font-size: 13px; color: #666; }
         .radio-option.selected { border-color: var(--primary-color); background: #F3E8FF; color: var(--primary-color); font-weight: 600; }
 
-        /* --- BOTTOM NAV --- */
-        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; height: 80px; background: white; display: flex; justify-content: space-around; align-items: center; border-top: 1px solid #eee; z-index: 99; padding-bottom: 10px; }
-        .nav-item { display: flex; flex-direction: column; align-items: center; gap: 6px; color: #9CA3AF; cursor: pointer; flex: 1; }
+        /* --- BOTTOM NAV (FIXED) --- */
+        .bottom-nav { 
+            position: fixed; 
+            bottom: 0; left: 0; width: 100%; height: 80px; 
+            background: white; 
+            display: flex; justify-content: space-around; align-items: center; 
+            border-top: 1px solid #eee; 
+            z-index: 9999; /* Z-Index Tinggi agar tidak tertutup */
+            padding-bottom: 10px; 
+        }
+        .nav-item { display: flex; flex-direction: column; align-items: center; gap: 6px; color: #9CA3AF; cursor: pointer; flex: 1; -webkit-tap-highlight-color: transparent; }
         .nav-item.active { color: var(--primary-color); }
-        .nav-item i { font-size: 22px; }
-        .nav-item span { font-size: 11px; font-weight: 600; }
+        .nav-item i { font-size: 22px; pointer-events: none; }
+        .nav-item span { font-size: 11px; font-weight: 600; pointer-events: none; }
 
-        /* --- DESKTOP MODE --- */
+        /* --- DESKTOP --- */
         @media (min-width: 1024px) {
             .app-container { flex-direction: row; }
             .sidebar { display: flex; width: var(--sidebar-width); background: white; flex-direction: column; padding: 40px 30px; border-right: 1px solid #eee; }
@@ -123,27 +176,19 @@
         }
 
         /* MODAL */
-        .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 999; display: none; justify-content: center; align-items: flex-end; }
+        .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 11000; display: none; justify-content: center; align-items: flex-end; }
         .modal-content { background: white; width: 100%; padding: 30px; border-radius: 25px 25px 0 0; animation: slideUp 0.3s ease; }
         @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
 
-        /* SCREEN VISIBILITY */
+        /* VISIBILITY */
         .screen { display: none; animation: fadeIn 0.2s ease-out; }
         .screen.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
         /* AUTH & OOBE */
-        .auth-screen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, var(--primary-color), var(--primary-dark)); z-index: 2000; display: none; flex-direction: column; justify-content: center; align-items: center; padding: 20px;}
+        .auth-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, var(--primary-color), var(--primary-dark)); z-index: 12000; display: none; flex-direction: column; justify-content: center; align-items: center; padding: 20px;}
         .auth-box { background: white; width: 100%; max-width: 400px; padding: 40px 30px; border-radius: 30px; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.2); }
-        
-        .oobe-screen { 
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark)); 
-            z-index: 3000; 
-            display: flex; justify-content: center; align-items: center; 
-            color: white; flex-direction: column; 
-            text-align: center;
-        }
+        .oobe-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, var(--primary-color), var(--primary-dark)); z-index: 13000; display: flex; justify-content: center; align-items: center; color: white; flex-direction: column; text-align: center;}
         .oobe-title { font-size: 28px; font-weight: 700; margin-bottom: 10px; margin-top: 20px; }
         .oobe-desc { font-size: 14px; opacity: 0.9; }
         .loader { width: 40px; height: 40px; border: 4px solid rgba(255,255,255,0.3); border-top: 4px solid white; border-radius: 50%; animation: spin 1s linear infinite; margin-top: 30px; }
@@ -151,19 +196,32 @@
         
         .theme-selector { display: flex; gap: 10px; justify-content: center; margin-top: 10px; flex-wrap: wrap;}
         .theme-circle { width: 40px; height: 40px; border-radius: 50%; cursor: pointer; border: 2px solid white; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        
         .update-list { text-align: left; font-size: 13px; color: #555; margin-bottom: 20px; padding-left: 20px; }
         .update-list li { margin-bottom: 10px; }
-        
         .auth-links { margin-top: 20px; display: flex; flex-direction: column; gap: 10px; font-size: 13px; color: var(--text-grey); }
         .auth-links span { cursor: pointer; }
     </style>
 </head>
 <body>
 
+<div class="bottom-nav">
+    <div class="nav-item active nav-home" onclick="showPage('homeScreen')">
+        <i class="fas fa-home"></i><span>Home</span>
+    </div>
+    <div class="nav-item nav-asset" onclick="showPage('assetScreen')">
+        <i class="fas fa-wallet"></i><span>Aset</span>
+    </div>
+    <div class="nav-item nav-history" onclick="showPage('historyScreen')">
+        <i class="fas fa-list-ul"></i><span>Riwayat</span>
+    </div>
+    <div class="nav-item nav-account" onclick="showPage('accountInfoScreen')">
+        <i class="fas fa-user-circle"></i><span>Akun</span>
+    </div>
+</div>
+
 <div id="oobeScreen" class="oobe-screen">
     <i class="fas fa-piggy-bank" style="font-size: 70px;"></i>
-    <h2 class="oobe-title" id="oobeTitle">CelenganKu v2.1.0</h2>
+    <h2 class="oobe-title" id="oobeTitle">CelenganKu v2.1.3</h2>
     <p class="oobe-desc" id="oobeDesc">Memuat aplikasi...</p>
     <div class="loader"></div>
 </div>
@@ -175,7 +233,6 @@
         <p id="authDesc" style="color: var(--text-grey); margin-bottom: 30px; font-size: 14px;">Kelola keuanganmu dengan lebih pintar.</p>
         
         <input type="text" id="username" class="form-input" placeholder="Username" style="margin-bottom: 15px;">
-        
         <div class="password-wrapper" style="margin-bottom: 20px;">
             <input type="password" id="password" class="form-input" placeholder="Password">
             <i class="fas fa-eye password-toggle-icon" onclick="togglePasswordVisibility('password', this)"></i>
@@ -234,86 +291,47 @@
 
                 <div class="section-title">Menu Transaksi</div>
                 <div class="menu-grid">
-                    <div class="action-btn" onclick="openModal('in')">
-                        <div class="icon-box"><i class="fas fa-plus-square"></i></div><span class="action-label">Isi Saldo</span>
-                    </div>
-                    <div class="action-btn" onclick="openModal('out')">
-                        <div class="icon-box"><i class="fas fa-arrow-up"></i></div><span class="action-label">Pengeluaran</span>
-                    </div>
-                    <div class="action-btn" onclick="showPage('historyScreen')">
-                        <div class="icon-box"><i class="fas fa-history"></i></div><span class="action-label">Riwayat</span>
-                    </div>
-                    <div class="action-btn" onclick="showPage('analysisScreen')">
-                        <div class="icon-box" style="color:#F59E0B;"><i class="fas fa-chart-pie"></i></div><span class="action-label">Analisis</span>
-                    </div>
-                    
-                    <div class="action-btn" onclick="showUpdateNotes()">
-                        <div class="icon-box" style="color:#10B981;"><i class="fas fa-bullhorn"></i></div><span class="action-label">Info Update</span>
-                    </div>
-                    <div class="action-btn" onclick="openDonation()">
-                        <div class="icon-box" style="color:#EC4899;"><i class="fas fa-hand-holding-heart"></i></div><span class="action-label">Donasi</span>
-                    </div>
+                    <div class="action-btn" onclick="openModal('in')"><div class="icon-box"><i class="fas fa-plus-square"></i></div><span class="action-label">Isi Saldo</span></div>
+                    <div class="action-btn" onclick="openModal('out')"><div class="icon-box"><i class="fas fa-arrow-up"></i></div><span class="action-label">Pengeluaran</span></div>
+                    <div class="action-btn" onclick="showPage('historyScreen')"><div class="icon-box"><i class="fas fa-history"></i></div><span class="action-label">Riwayat</span></div>
+                    <div class="action-btn" onclick="showPage('analysisScreen')"><div class="icon-box" style="color:#F59E0B;"><i class="fas fa-chart-pie"></i></div><span class="action-label">Analisis</span></div>
+                    <div class="action-btn" onclick="showUpdateNotes()"><div class="icon-box" style="color:#10B981;"><i class="fas fa-bullhorn"></i></div><span class="action-label">Info Update</span></div>
+                    <div class="action-btn" onclick="openDonation()"><div class="icon-box" style="color:#EC4899;"><i class="fas fa-hand-holding-heart"></i></div><span class="action-label">Donasi</span></div>
                 </div>
                 
                 <div class="info-card" style="display: flex; align-items: center; gap: 15px;">
                     <div style="width: 50px; height: 50px; background: #E0F2FE; border-radius: 50%; display: flex; justify-content: center; align-items: center; color: #0284C7; font-size: 20px;"><i class="fas fa-lightbulb"></i></div>
-                    <div>
-                        <h4 style="font-size: 14px; margin-bottom: 3px;">Tips Keuangan</h4>
-                        <p style="font-size: 12px; color: var(--text-grey);">Pisahkan uang jajan dan tabunganmu menggunakan fitur <b>Kantong</b> di menu Aset.</p>
-                    </div>
+                    <div><h4 style="font-size: 14px; margin-bottom: 3px;">Tips Keuangan</h4><p style="font-size: 12px; color: var(--text-grey);">Pisahkan uang jajan dan tabunganmu menggunakan fitur <b>Kantong</b> di menu Aset.</p></div>
                 </div>
             </div>
 
             <div id="assetScreen" class="screen">
-                <div class="asset-header">
-                    <div class="asset-title">Aset Saya</div>
-                </div>
-
+                <div class="asset-header"><div class="asset-title">Aset Saya</div></div>
                 <div class="asset-summary-card" style="background: white; margin: 20px; padding: 25px; border-radius: 24px; box-shadow: 0 4px 15px rgba(0,0,0,0.03);">
-                    <div class="balance-label">
-                        Total Seluruh Aset <i class="fas fa-eye eye-toggle" onclick="toggleBalanceVisibility()"></i>
-                    </div>
+                    <div class="balance-label">Total Seluruh Aset <i class="fas fa-eye eye-toggle" onclick="toggleBalanceVisibility()"></i></div>
                     <div class="balance-amount" id="assetTotalBalance">Rp 0</div>
                     <div style="font-size: 11px; color: var(--text-grey); margin-top:5px;">*Kantong Hutang tidak dihitung</div>
                 </div>
-
                 <div class="section-title">Daftar Kantong</div>
                 <div class="pockets-grid" id="pocketGrid"></div>
             </div>
 
             <div id="pocketDetailScreen" class="screen" style="background: white; min-height: 100%;">
-                <div class="detail-header">
-                    <i class="fas fa-arrow-left back-btn" onclick="goBackToPrevious()"></i>
-                    <span style="font-weight: 700; font-size: 18px;">Rincian Kantong</span>
-                </div>
-
+                <div class="detail-header"><i class="fas fa-arrow-left back-btn" onclick="goBackToPrevious()"></i><span style="font-weight: 700; font-size: 18px;">Rincian Kantong</span></div>
                 <div class="detail-content">
-                    <div class="big-pocket-icon" id="detailIconBox">
-                        <i class="fas fa-wallet" id="detailIcon"></i>
-                    </div>
+                    <div class="big-pocket-icon" id="detailIconBox"><i class="fas fa-wallet" id="detailIcon"></i></div>
                     <div class="detail-pocket-name" id="detailName">Nama Kantong</div>
-                    <div class="detail-pocket-bal" id="detailBalance">Rp 0</div>
-
+                    <div id="detailBalanceContainer"><div class="detail-pocket-bal" id="detailBalance">Rp 0</div></div>
                     <div class="detail-actions">
-                        <div class="detail-action-btn" onclick="openModal('in', currentPocketId)">
-                            <div class="detail-icon-circle"><i class="fas fa-plus"></i></div>
-                            <span class="detail-action-label">Tambah</span>
-                        </div>
-                        <div class="detail-action-btn" onclick="openModal('out', currentPocketId)">
-                            <div class="detail-icon-circle" style="color: var(--danger); border-color: var(--danger);"><i class="fas fa-arrow-up"></i></div>
-                            <span class="detail-action-label">Pakai</span>
-                        </div>
-                        <div class="detail-action-btn" onclick="deleteCurrentPocket()">
-                            <div class="detail-icon-circle" style="color: var(--text-grey);"><i class="fas fa-trash-alt"></i></div>
-                            <span class="detail-action-label">Hapus</span>
-                        </div>
+                        <div class="detail-action-btn" onclick="openModal('in', currentPocketId)"><div class="detail-icon-circle"><i class="fas fa-plus"></i></div><span class="detail-action-label">Tambah</span></div>
+                        <div class="detail-action-btn" onclick="openModal('out', currentPocketId)"><div class="detail-icon-circle" style="color: var(--danger); border-color: var(--danger);"><i class="fas fa-arrow-up"></i></div><span class="detail-action-label">Pakai</span></div>
+                        <div class="detail-action-btn" onclick="deleteCurrentPocket()"><div class="detail-icon-circle" style="color: var(--text-grey);"><i class="fas fa-trash-alt"></i></div><span class="detail-action-label">Hapus</span></div>
+                        <div class="detail-action-btn" id="editDebtBtn" style="display:none;" onclick="editDebtTarget()"><div class="detail-icon-circle" style="color: #F59E0B;"><i class="fas fa-pen"></i></div><span class="detail-action-label">Target</span></div>
                     </div>
                 </div>
-                
                 <div style="height: 10px; background: #F8F9FA;"></div>
-                
                 <div style="padding: 25px;">
-                    <h4 style="font-size: 16px; margin-bottom: 20px; font-weight: 700;">Riwayat Transaksi Kantong Ini</h4>
+                    <h4 style="font-size: 16px; margin-bottom: 20px; font-weight: 700;">Riwayat Transaksi</h4>
                     <p style="font-size:11px; color:#888; margin-bottom:10px;">Klik transaksi untuk Edit/Hapus</p>
                     <ul id="pocketHistoryList" style="list-style: none;"></ul>
                 </div>
@@ -321,10 +339,7 @@
 
             <div id="historyScreen" class="screen">
                 <div class="section-title" style="margin-top: 25px;">Semua Riwayat</div>
-                <div style="padding: 0 25px; font-size:11px; color:#888; margin-bottom:10px;">Klik transaksi untuk Edit/Hapus</div>
-                <div class="info-card">
-                    <ul id="globalTransactionList" style="list-style: none;"></ul>
-                </div>
+                <div class="info-card"><ul id="globalTransactionList" style="list-style: none;"></ul></div>
             </div>
 
             <div id="analysisScreen" class="screen">
@@ -332,85 +347,27 @@
                 <div class="info-card" style="text-align: center;">
                     <canvas id="financeChart"></canvas>
                     <div style="margin-top: 30px; display: flex; gap: 15px;">
-                        <div style="flex:1; background:#ECFDF5; padding:15px; border-radius:15px;">
-                            <small style="color:#065F46">Pemasukan</small><br>
-                            <b style="color:#059669; font-size:16px;" id="totalInDisplay">Rp 0</b>
-                        </div>
-                        <div style="flex:1; background:#FEF2F2; padding:15px; border-radius:15px;">
-                            <small style="color:#991B1B">Pengeluaran</small><br>
-                            <b style="color:#DC2626; font-size:16px;" id="totalOutDisplay">Rp 0</b>
-                        </div>
+                        <div style="flex:1; background:#ECFDF5; padding:15px; border-radius:15px;"><small style="color:#065F46">Pemasukan</small><br><b style="color:#059669; font-size:16px;" id="totalInDisplay">Rp 0</b></div>
+                        <div style="flex:1; background:#FEF2F2; padding:15px; border-radius:15px;"><small style="color:#991B1B">Pengeluaran</small><br><b style="color:#DC2626; font-size:16px;" id="totalOutDisplay">Rp 0</b></div>
                     </div>
                 </div>
             </div>
 
             <div id="accountInfoScreen" class="screen">
                 <div class="section-title" style="margin-top: 25px;">Profil & Pengaturan</div>
-                
-                <div class="info-card">
-                    <h4 style="margin-bottom:15px; font-size:15px;">Data Backup</h4>
-                    <button class="btn-save" onclick="exportData()"><i class="fas fa-download"></i> Simpan Data ke File</button>
-                </div>
-
+                <div class="info-card"><h4 style="margin-bottom:15px; font-size:15px;">Data Backup</h4><button class="btn-save" onclick="exportData()"><i class="fas fa-download"></i> Simpan Data ke File</button></div>
                 <div class="info-card">
                     <h4 style="margin-bottom:15px; font-size:15px;">Ganti Password</h4>
-                    
-                    <div class="form-group">
-                        <label>Password Lama</label>
-                        <div class="password-wrapper">
-                            <input type="password" id="oldPass" class="form-input">
-                            <i class="fas fa-eye password-toggle-icon" onclick="togglePasswordVisibility('oldPass', this)"></i>
-                        </div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label>Password Baru</label>
-                        <div class="password-wrapper">
-                            <input type="password" id="newPass" class="form-input">
-                            <i class="fas fa-eye password-toggle-icon" onclick="togglePasswordVisibility('newPass', this)"></i>
-                        </div>
-                    </div>
+                    <div class="form-group"><label>Password Lama</label><div class="password-wrapper"><input type="password" id="oldPass" class="form-input"><i class="fas fa-eye password-toggle-icon" onclick="togglePasswordVisibility('oldPass', this)"></i></div></div>
+                    <div class="form-group"><label>Password Baru</label><div class="password-wrapper"><input type="password" id="newPass" class="form-input"><i class="fas fa-eye password-toggle-icon" onclick="togglePasswordVisibility('newPass', this)"></i></div></div>
                     <button class="btn-save" onclick="changePassword()">Simpan Password Baru</button>
                 </div>
-
-                <div class="info-card">
-                    <h4 style="margin-bottom:15px; font-size:15px;">Personalisasi</h4>
-                    <div class="theme-selector">
-                        <div class="theme-circle" style="background:#8B5CF6" onclick="setTheme('#8B5CF6', '#7C3AED')"></div>
-                        <div class="theme-circle" style="background:#3B82F6" onclick="setTheme('#3B82F6', '#2563EB')"></div>
-                        <div class="theme-circle" style="background:#10B981" onclick="setTheme('#10B981', '#059669')"></div>
-                        <div class="theme-circle" style="background:#EC4899" onclick="setTheme('#EC4899', '#DB2777')"></div>
-                        <div class="theme-circle" style="background:#1F2937" onclick="setTheme('#1F2937', '#111827')"></div>
-                    </div>
-                </div>
-
-                <div class="info-card">
-                    <h4 style="margin-bottom:15px; font-size:15px; color:var(--danger);">Zona Bahaya</h4>
-                    <button class="btn-save btn-danger" onclick="resetBalance()">Reset Semua Data</button>
-                </div>
-                
-                <div style="text-align: center; margin-bottom: 30px;">
-                    <button class="btn-save btn-outline" style="border: none; color: var(--text-grey);" onclick="logout()">Keluar Aplikasi</button>
-                </div>
+                <div class="info-card"><h4 style="margin-bottom:15px; font-size:15px;">Personalisasi</h4><div class="theme-selector"><div class="theme-circle" style="background:#8B5CF6" onclick="setTheme('#8B5CF6', '#7C3AED')"></div><div class="theme-circle" style="background:#3B82F6" onclick="setTheme('#3B82F6', '#2563EB')"></div><div class="theme-circle" style="background:#10B981" onclick="setTheme('#10B981', '#059669')"></div><div class="theme-circle" style="background:#EC4899" onclick="setTheme('#EC4899', '#DB2777')"></div><div class="theme-circle" style="background:#1F2937" onclick="setTheme('#1F2937', '#111827')"></div></div></div>
+                <div class="info-card"><h4 style="margin-bottom:15px; font-size:15px; color:var(--danger);">Zona Bahaya</h4><button class="btn-save btn-danger" onclick="resetBalance()">Reset Semua Data</button></div>
+                <div style="text-align: center; margin-bottom: 30px;"><button class="btn-save btn-outline" style="border: none; color: var(--text-grey);" onclick="logout()">Keluar Aplikasi</button></div>
             </div>
-
         </div>
     </main>
-
-    <div class="bottom-nav">
-        <div class="nav-item active nav-home" onclick="showPage('homeScreen')">
-            <i class="fas fa-home"></i><span>Home</span>
-        </div>
-        <div class="nav-item nav-asset" onclick="showPage('assetScreen')">
-            <i class="fas fa-wallet"></i><span>Aset</span>
-        </div>
-        <div class="nav-item nav-history" onclick="showPage('historyScreen')">
-            <i class="fas fa-list-ul"></i><span>Riwayat</span>
-        </div>
-        <div class="nav-item nav-account" onclick="showPage('accountInfoScreen')">
-            <i class="fas fa-user-circle"></i><span>Akun</span>
-        </div>
-    </div>
 </div>
 
 <div id="transactionModal" class="modal">
@@ -426,12 +383,8 @@
 <div id="transactionActionModal" class="modal">
     <div class="modal-content">
         <h3 style="text-align:center; margin-bottom:15px;">Aksi Transaksi</h3>
-        <p style="text-align:center; color:#666; margin-bottom:20px; font-size:13px;">Apa yang ingin kamu lakukan pada transaksi ini?</p>
-        
-        <div style="display:flex; gap:10px;">
-            <button class="btn-save" onclick="editSelectedTransaction()">Edit Nominal</button>
-            <button class="btn-save btn-danger" onclick="deleteSelectedTransaction()">Hapus</button>
-        </div>
+        <p style="text-align:center; color:#666; margin-bottom:20px; font-size:13px;">Pilih tindakan untuk riwayat ini</p>
+        <div style="display:flex; gap:10px;"><button class="btn-save" onclick="editSelectedTransaction()">Edit Nominal</button><button class="btn-save btn-danger" onclick="deleteSelectedTransaction()">Hapus</button></div>
         <button class="btn-save btn-outline" style="margin-top: 10px; border:none;" onclick="document.getElementById('transactionActionModal').style.display='none'">Batal</button>
     </div>
 </div>
@@ -439,23 +392,10 @@
 <div id="addPocketModal" class="modal">
     <div class="modal-content">
         <h3 style="text-align:center; margin-bottom:20px;">Kantong Baru</h3>
-        
-        <div class="radio-group">
-            <div class="radio-option selected" id="optRegular" onclick="selectPocketType('regular')">Tabungan</div>
-            <div class="radio-option" id="optDebt" onclick="selectPocketType('debt')">Hutang/Cicilan</div>
-        </div>
-
-        <input type="text" id="newPocketName" class="form-input" placeholder="Nama Kantong (misal: Jajan)" style="margin-bottom: 15px;">
-        <div class="form-group">
-            <label>Pilih Ikon</label>
-            <div class="theme-selector">
-                <div class="theme-circle" style="background:#8B5CF6" onclick="selectPocketIcon('fa-wallet', '#8B5CF6')"></div>
-                <div class="theme-circle" style="background:#10B981" onclick="selectPocketIcon('fa-utensils', '#10B981')"></div>
-                <div class="theme-circle" style="background:#F59E0B" onclick="selectPocketIcon('fa-gamepad', '#F59E0B')"></div>
-                <div class="theme-circle" style="background:#EF4444" onclick="selectPocketIcon('fa-heart', '#EF4444')"></div>
-                <div class="theme-circle" style="background:#3B82F6" onclick="selectPocketIcon('fa-plane', '#3B82F6')"></div>
-            </div>
-        </div>
+        <div class="radio-group"><div class="radio-option selected" id="optRegular" onclick="selectPocketType('regular')">Tabungan</div><div class="radio-option" id="optDebt" onclick="selectPocketType('debt')">Hutang/Cicilan</div></div>
+        <input type="text" id="newPocketName" class="form-input" placeholder="Nama Kantong" style="margin-bottom: 15px;">
+        <input type="tel" id="newPocketTarget" class="form-input" placeholder="Total Hutang (Rp)" style="margin-bottom: 15px; display:none;" oninput="formatInputRupiah(this)">
+        <div class="form-group"><label>Pilih Ikon</label><div class="theme-selector"><div class="theme-circle" style="background:#8B5CF6" onclick="selectPocketIcon('fa-wallet', '#8B5CF6')"></div><div class="theme-circle" style="background:#10B981" onclick="selectPocketIcon('fa-utensils', '#10B981')"></div><div class="theme-circle" style="background:#F59E0B" onclick="selectPocketIcon('fa-gamepad', '#F59E0B')"></div><div class="theme-circle" style="background:#EF4444" onclick="selectPocketIcon('fa-heart', '#EF4444')"></div><div class="theme-circle" style="background:#3B82F6" onclick="selectPocketIcon('fa-plane', '#3B82F6')"></div></div></div>
         <button class="btn-save" onclick="createNewPocket()">Buat</button>
         <button class="btn-save btn-outline" style="margin-top: 10px; border:none;" onclick="document.getElementById('addPocketModal').style.display='none'">Batal</button>
     </div>
@@ -463,34 +403,35 @@
 
 <div id="updateNotesModal" class="modal">
     <div class="modal-content">
-        <h3 style="text-align:center; margin-bottom:20px;">Update v2.1.0</h3>
+        <h3 style="text-align:center; margin-bottom:20px;">Update v2.1.3 (Final)</h3>
         <ul class="update-list">
-            <li><i class="fas fa-edit" style="color:var(--primary-color)"></i> <b>Edit/Hapus Transaksi:</b> Klik riwayat untuk ubah.</li>
-            <li><i class="fas fa-receipt" style="color:var(--danger)"></i> <b>Kantong Hutang:</b> Pisahkan hutang dari aset total.</li>
-            <li><i class="fas fa-eye" style="color:var(--success)"></i> <b>Intip Password:</b> Tombol mata sudah kembali.</li>
-            <li><i class="fas fa-bug" style="color:var(--danger)"></i> <b>Bug Fixes:</b> Perbaikan fitur restore & UI.</li>
+            <li><i class="fas fa-check-circle" style="color:var(--success)"></i> <b>Fixed Navigasi:</b> Tombol bawah & kembali lancar.</li>
+            <li><i class="fas fa-check-circle" style="color:var(--success)"></i> <b>Fixed UI:</b> Tampilan beranda rapi seperti awal.</li>
+            <li><i class="fas fa-wallet" style="color:var(--primary-color)"></i> <b>Fitur Hutang:</b> Kelola hutang tanpa ganggu aset.</li>
         </ul>
         <button class="btn-save" onclick="document.getElementById('updateNotesModal').style.display='none'">Tutup</button>
     </div>
 </div>
 
 <script>
-    // --- STATE ---
     let currentUser = null;
     let users = [];
     try { users = JSON.parse(localStorage.getItem('celengan_users_v4')) || []; } catch(e) { users=[]; }
-    
-    let currentAuthMode = 'login';
-    let transactionType = 'in';
-    let isBalanceHidden = localStorage.getItem('balance_hidden') === 'true';
-    let currentPocketId = null; 
-    let tempNewPocket = { icon: 'fa-wallet', color: '#8B5CF6', type: 'regular' };
-    let financeChart = null;
-    let selectedTransactionId = null; // For editing/deleting
+    let currentAuthMode = 'login', transactionType = 'in', isBalanceHidden = localStorage.getItem('balance_hidden') === 'true';
+    let currentPocketId = null, tempNewPocket = { icon: 'fa-wallet', color: '#8B5CF6', type: 'regular' };
+    let selectedTransactionId = null, financeChart = null;
 
-    // --- INIT ---
     window.addEventListener('load', () => {
-        // Migration V3 -> V4
+        // Back Button Logic
+        history.pushState(null, null, location.href);
+        window.onpopstate = function () {
+            if(document.getElementById('authScreen').style.display === 'none') {
+                if(document.getElementById('pocketDetailScreen').classList.contains('active')) showPage('assetScreen');
+                else if(!document.getElementById('homeScreen').classList.contains('active')) showPage('homeScreen');
+                history.pushState(null, null, location.href); // Stay on app
+            }
+        };
+
         if(users.length === 0 && localStorage.getItem('celengan_users_v3')) {
             try {
                 let oldData = JSON.parse(localStorage.getItem('celengan_users_v3'));
@@ -501,438 +442,197 @@
         const savedPrimary = localStorage.getItem('theme_primary');
         const savedDark = localStorage.getItem('theme_dark');
         if(savedPrimary) setTheme(savedPrimary, savedDark);
-
-        // OOBE Sequence
-        showOOBE('startup', '').then(() => {
-            document.getElementById('authScreen').style.display='flex';
-            checkUpdate();
-        });
+        showOOBE('startup', '').then(() => { document.getElementById('authScreen').style.display='flex'; checkUpdate(); });
     });
 
     const formatRupiah = (n) => new Intl.NumberFormat('id-ID', {style:'currency', currency:'IDR', minimumFractionDigits:0}).format(n);
     const formatDate = (s) => new Date(s).toLocaleDateString('id-ID', {day:'numeric', month:'short', hour:'2-digit', minute:'2-digit'});
 
-    // --- OOBE ANIMATION ---
     function showOOBE(type, name) {
         const oobe = document.getElementById('oobeScreen');
         const title = document.getElementById('oobeTitle');
         const desc = document.getElementById('oobeDesc');
-        
         oobe.style.display = 'flex';
-        
-        if(type === 'startup') {
-            title.innerText = "CelenganKu"; desc.innerText = "Memuat aplikasi...";
-            return new Promise(r => setTimeout(() => { oobe.style.display='none'; r(); }, 2000));
-        } else if(type === 'login') {
-            title.innerText = `Halo, ${name}!`; desc.innerText = "Mempersiapkan akunmu...";
-            return new Promise(r => setTimeout(() => { oobe.style.display='none'; r(); }, 2000));
-        } else {
-            title.innerText = "Sampai Jumpa!"; desc.innerText = "Terima kasih telah menabung.";
-            return new Promise(r => setTimeout(() => { oobe.style.display='none'; r(); }, 2000));
-        }
+        if(type === 'startup') { title.innerText = "CelenganKu"; desc.innerText = "Memuat aplikasi..."; return new Promise(r => setTimeout(() => { oobe.style.display='none'; r(); }, 2000)); }
+        else if(type === 'login') { title.innerText = `Halo, ${name}!`; desc.innerText = "Mempersiapkan akunmu..."; return new Promise(r => setTimeout(() => { oobe.style.display='none'; r(); }, 2000)); }
+        else { title.innerText = "Sampai Jumpa!"; desc.innerText = "Terima kasih telah menabung."; return new Promise(r => setTimeout(() => { oobe.style.display='none'; location.reload(); }, 2000)); }
     }
 
-    // --- AUTH LOGIC (FIXED FORGOT & CHANGE PASS) ---
     function handleAuth() {
         const u = document.getElementById('username').value.trim();
         const p = document.getElementById('password').value.trim();
         if(!u || !p) return alert("Isi data!");
-
         if(currentAuthMode === 'login') {
             const user = users.find(x => x.username === u && x.password === p);
-            if(user) {
-                currentUser = user;
-                if(!currentUser.pockets) currentUser.pockets = [{ id: Date.now(), name: "Tabungan Utama", balance: currentUser.balance || 0, icon: "fa-wallet", color: "#8B5CF6" }];
-                document.getElementById('authScreen').style.display = 'none';
-                showOOBE('login', u).then(initApp);
-            } else alert("Salah username/password");
+            if(user) { currentUser = user; if(!currentUser.pockets) currentUser.pockets = [{ id: Date.now(), name: "Tabungan Utama", balance: 0, icon: "fa-wallet", color: "#8B5CF6" }]; document.getElementById('authScreen').style.display = 'none'; showOOBE('login', u).then(initApp); } else alert("Salah username/password");
         } else if(currentAuthMode === 'register') {
             if(users.find(x => x.username === u)) return alert("Username ada!");
             users.push({ username:u, password:p, pockets: [{ id: Date.now(), name: "Tabungan Utama", balance: 0, icon: "fa-wallet", color: "#8B5CF6" }], transactions:[] });
-            localStorage.setItem('celengan_users_v4', JSON.stringify(users));
-            alert("Daftar sukses!"); switchAuthMode('login');
+            localStorage.setItem('celengan_users_v4', JSON.stringify(users)); alert("Daftar sukses!"); switchAuthMode('login');
         } else if(currentAuthMode === 'forgot') {
             const user = users.find(x => x.username === u);
-            if(user) {
-                user.password = p; // Reset Password
-                localStorage.setItem('celengan_users_v4', JSON.stringify(users));
-                alert("Password berhasil direset! Silakan login.");
-                switchAuthMode('login');
-            } else alert("Username tidak ditemukan!");
+            if(user) { user.password = p; localStorage.setItem('celengan_users_v4', JSON.stringify(users)); alert("Password direset!"); switchAuthMode('login'); } else alert("Username tidak ada!");
         }
     }
 
     function switchAuthMode(mode) {
         currentAuthMode = mode;
-        const title = document.getElementById('authTitle');
-        const desc = document.getElementById('authDesc');
-        const btn = document.getElementById('authBtn');
-        const links = document.getElementById('authLinks');
-        const cancelBtn = document.getElementById('cancelAuthBtn');
-        const restoreContainer = document.getElementById('restoreContainer');
-        const passInput = document.getElementById('password');
-
-        document.getElementById('username').value = '';
-        passInput.value = '';
-
-        if(mode === 'register') {
-            title.innerText = 'Buat Akun'; desc.innerText = 'Daftar untuk mulai menabung'; btn.innerText = 'Daftar';
-            links.innerHTML = `<span onclick="switchAuthMode('login')">Sudah punya akun? <b style="color:var(--primary-color)">Masuk</b></span>`;
-            cancelBtn.style.display = 'none'; restoreContainer.style.display = 'block'; passInput.placeholder = "Buat Password";
-        } else if(mode === 'forgot') {
-            title.innerText = 'Reset Password'; desc.innerText = 'Masukkan username & password baru'; btn.innerText = 'Simpan Password';
-            links.style.display = 'none'; cancelBtn.style.display = 'block'; restoreContainer.style.display = 'none'; passInput.placeholder = "Password Baru";
-        } else { // Login (default)
-            title.innerText = 'Masuk'; desc.innerText = 'Silakan masuk ke akunmu'; btn.innerText = 'Masuk';
-            links.style.display = 'flex'; links.innerHTML = `<span onclick="switchAuthMode('forgot')" style="text-decoration: underline;">Lupa Password?</span><span onclick="switchAuthMode('register')">Belum punya akun? <b style="color:var(--primary-color)">Daftar</b></span>`;
-            cancelBtn.style.display = 'none'; restoreContainer.style.display = 'block'; passInput.placeholder = "Password";
-        }
+        const title=document.getElementById('authTitle'), desc=document.getElementById('authDesc'), btn=document.getElementById('authBtn'), links=document.getElementById('authLinks'), cancel=document.getElementById('cancelAuthBtn'), restore=document.getElementById('restoreContainer'), pass=document.getElementById('password');
+        document.getElementById('username').value = ''; pass.value = '';
+        if(mode==='register'){ title.innerText='Buat Akun'; desc.innerText='Daftar baru'; btn.innerText='Daftar'; links.innerHTML=`<span onclick="switchAuthMode('login')">Sudah punya? <b style="color:var(--primary-color)">Masuk</b></span>`; cancel.style.display='none'; restore.style.display='block'; pass.placeholder="Buat Password"; }
+        else if(mode==='forgot'){ title.innerText='Reset Password'; desc.innerText='Reset akun'; btn.innerText='Simpan'; links.style.display='none'; cancel.style.display='block'; restore.style.display='none'; pass.placeholder="Password Baru"; }
+        else { title.innerText='Masuk'; desc.innerText='Login akun'; btn.innerText='Masuk'; links.style.display='flex'; links.innerHTML=`<span onclick="switchAuthMode('forgot')" style="text-decoration:underline">Lupa Password?</span><span onclick="switchAuthMode('register')">Belum punya? <b style="color:var(--primary-color)">Daftar</b></span>`; cancel.style.display='none'; restore.style.display='block'; pass.placeholder="Password"; }
     }
 
-    function changePassword() {
-        const oldP = document.getElementById('oldPass').value;
-        const newP = document.getElementById('newPass').value;
-        if(oldP !== currentUser.password) return alert("Password lama salah!");
-        if(newP.length < 3) return alert("Password baru terlalu pendek!");
-        currentUser.password = newP; 
-        const idx = users.findIndex(u=>u.username===currentUser.username);
-        if(idx!==-1) { users[idx]=currentUser; localStorage.setItem('celengan_users_v4', JSON.stringify(users)); }
-        
-        document.getElementById('oldPass').value=''; document.getElementById('newPass').value='';
-        alert("Password berhasil diubah!");
-    }
+    function togglePasswordVisibility(id, icon) { const x=document.getElementById(id); if(x.type==="password"){x.type="text";icon.classList.remove("fa-eye");icon.classList.add("fa-eye-slash");}else{x.type="password";icon.classList.remove("fa-eye-slash");icon.classList.add("fa-eye");} }
+    function changePassword(){ const o=document.getElementById('oldPass').value, n=document.getElementById('newPass').value; if(o!==currentUser.password)return alert("Password lama salah"); if(n.length<3)return alert("Pendek!"); currentUser.password=n; updateUI(); document.getElementById('oldPass').value=''; document.getElementById('newPass').value=''; alert("Sukses"); }
+    function logout() { if(confirm("Keluar?")) { document.getElementById('authScreen').style.display='flex'; document.getElementById('username').value=''; document.getElementById('password').value=''; } }
 
-    function togglePasswordVisibility(inputId, icon) {
-        const input = document.getElementById(inputId);
-        if(input.type === "password") {
-            input.type = "text";
-            icon.classList.remove("fa-eye");
-            icon.classList.add("fa-eye-slash");
-        } else {
-            input.type = "password";
-            icon.classList.remove("fa-eye-slash");
-            icon.classList.add("fa-eye");
-        }
-    }
-
-    function logout() { if(confirm("Yakin ingin keluar?")) showOOBE('logout','').then(() => location.reload()); }
-
-    // --- UPDATE & DONASI ---
-    function checkUpdate() {
-        if(!localStorage.getItem('update_seen_v2.1.0')) {
-            localStorage.setItem('update_seen_v2.1.0', 'true');
-            document.getElementById('updateNotesModal').style.display = 'flex';
-        }
-    }
+    function checkUpdate() { if(!localStorage.getItem('update_seen_v2.1.3')) { localStorage.setItem('update_seen_v2.1.3', 'true'); document.getElementById('updateNotesModal').style.display = 'flex'; } }
     function showUpdateNotes() { document.getElementById('updateNotesModal').style.display = 'flex'; }
-    function openDonation() { 
-        if(confirm("Traktir developer kopi?")) window.open('https://saweria.co/tetoyapping29312', '_blank'); 
-    }
+    function openDonation() { if(confirm("Buka Saweria?")) window.open('https://saweria.co/tetoyapping29312', '_blank'); }
 
-    // --- DATA RESTORE ---
-    function triggerRestore() { document.getElementById('restoreInput').click(); }
-    function importData(inp) {
-        const reader = new FileReader();
-        reader.onload = e => {
-            try {
-                const data = JSON.parse(e.target.result);
-                if(Array.isArray(data) && data.length > 0 && data[0].username) {
-                    if(confirm("Timpa data saat ini dengan file backup?")) {
-                        localStorage.setItem('celengan_users_v4', JSON.stringify(data));
-                        alert("Data berhasil dipulihkan!");
-                        location.reload(); 
-                    }
-                } else alert("Format file salah!");
-            } catch(err) { alert("File rusak!"); }
-        };
-        reader.readAsText(inp.files[0]);
-    }
-    function exportData() {
-        const str = JSON.stringify(users);
-        const link = document.createElement('a');
-        link.href = 'data:application/json;charset=utf-8,'+ encodeURIComponent(str);
-        link.download = 'backup_celenganku.json'; link.click();
-    }
-
-    // --- APP LOGIC ---
-    function initApp() {
-        document.getElementById('userDisplay').innerText = currentUser.username;
-        updateUI(); showPage('homeScreen');
-    }
-
+    function initApp() { document.getElementById('userDisplay').innerText = currentUser.username; updateUI(); showPage('homeScreen'); }
     function updateUI() {
-        const idx = users.findIndex(u=>u.username===currentUser.username);
-        if(idx!==-1) { users[idx]=currentUser; localStorage.setItem('celengan_users_v4', JSON.stringify(users)); }
-
-        const mainPocket = currentUser.pockets[0] || {balance:0};
-        document.getElementById('homeMainBalance').innerText = isBalanceHidden ? 'Rp •••••••' : formatRupiah(mainPocket.balance);
-
-        // Calculate Asset (Exclude Debt)
-        const total = currentUser.pockets.reduce((a,b) => {
-            return (b.type !== 'debt') ? a + b.balance : a;
-        }, 0);
-        document.getElementById('assetTotalBalance').innerText = isBalanceHidden ? 'Rp •••••••' : formatRupiah(total);
-
-        renderAssetGrid();
-        if(currentPocketId) loadPocketDetail(currentPocketId); 
+        const idx = users.findIndex(u=>u.username===currentUser.username); if(idx!==-1) { users[idx]=currentUser; localStorage.setItem('celengan_users_v4', JSON.stringify(users)); }
+        const main = currentUser.pockets[0]||{balance:0}; document.getElementById('homeMainBalance').innerText = isBalanceHidden?'Rp ••••':formatRupiah(main.balance);
+        const total = currentUser.pockets.reduce((a,b)=> (b.type!=='debt'?a+b.balance:a),0); document.getElementById('assetTotalBalance').innerText = isBalanceHidden?'Rp ••••':formatRupiah(total);
+        renderAssetGrid(); if(currentPocketId) loadPocketDetail(currentPocketId);
     }
 
     function renderAssetGrid() {
         const grid = document.getElementById('pocketGrid'); grid.innerHTML = '';
         currentUser.pockets.forEach(p => {
-            const isMain = p.name === "Tabungan Utama";
-            const isDebt = p.type === 'debt';
-            
-            let cardClass = isMain ? 'pocket-item pocket-main' : 'pocket-item pocket-regular';
-            if(isDebt) cardClass = 'pocket-item pocket-debt';
-            
-            const iconColor = isMain ? 'white' : p.color;
-            const badge = isDebt ? '<span class="debt-badge">Hutang</span>' : '';
-            
-            const el = document.createElement('div');
-            el.className = cardClass;
-            el.innerHTML = `
-                <div class="pocket-icon-small" style="color: ${iconColor}"><i class="fas ${p.icon}"></i></div>
-                <div>
-                    ${badge}
-                    <div class="pocket-name-text">${p.name}</div>
-                    <div class="pocket-bal-text">${isBalanceHidden ? '•••••' : formatRupiah(p.balance)}</div>
-                </div>
-            `;
-            el.onclick = () => { showPage('pocketDetailScreen'); loadPocketDetail(p.id); };
-            grid.appendChild(el);
+            const isMain=p.name==="Tabungan Utama", isDebt=p.type==='debt';
+            let cls = isMain?'pocket-item pocket-main':'pocket-item pocket-regular'; if(isDebt) cls='pocket-item pocket-debt';
+            const col = isMain?'white':p.color, bdg = isDebt?'<span class="debt-badge">Hutang</span>':'';
+            const el = document.createElement('div'); el.className=cls;
+            el.innerHTML = `<div class="pocket-icon-small" style="color:${col}"><i class="fas ${p.icon}"></i></div><div>${bdg}<div class="pocket-name-text">${p.name}</div><div class="pocket-bal-text">${isBalanceHidden?'••••':formatRupiah(p.balance)}</div></div>`;
+            el.onclick = () => { showPage('pocketDetailScreen'); loadPocketDetail(p.id); }; grid.appendChild(el);
         });
-        const addBtn = document.createElement('div');
-        addBtn.className = 'pocket-item add-new-pocket';
-        addBtn.innerHTML = '<i class="fas fa-plus" style="font-size:24px; margin-bottom:5px;"></i><span style="font-size:12px; font-weight:600;">Buat Baru</span>';
-        addBtn.onclick = () => document.getElementById('addPocketModal').style.display='flex';
-        grid.appendChild(addBtn);
+        const add = document.createElement('div'); add.className='pocket-item add-new-pocket'; add.innerHTML='<i class="fas fa-plus" style="font-size:24px; margin-bottom:5px;"></i><span style="font-size:12px; font-weight:600;">Buat Baru</span>';
+        add.onclick=()=>document.getElementById('addPocketModal').style.display='flex'; grid.appendChild(add);
     }
 
-    function openMainPocketDetail() {
-        if(currentUser.pockets.length > 0) {
-            showPage('pocketDetailScreen');
-            loadPocketDetail(currentUser.pockets[0].id);
-        }
-    }
-
+    function openMainPocketDetail() { if(currentUser.pockets.length>0) { showPage('pocketDetailScreen'); loadPocketDetail(currentUser.pockets[0].id); } }
     function loadPocketDetail(pid) {
-        currentPocketId = pid;
-        const pocket = currentUser.pockets.find(p => p.id === pid);
-        if(!pocket) return showPage('assetScreen');
-
-        document.getElementById('detailIconBox').style.backgroundColor = pocket.color;
-        document.getElementById('detailIcon').className = `fas ${pocket.icon}`;
+        currentPocketId = pid; const pocket = currentUser.pockets.find(p => p.id === pid); if(!pocket) return showPage('assetScreen');
+        document.getElementById('detailIconBox').style.backgroundColor = pocket.color; document.getElementById('detailIcon').className = `fas ${pocket.icon}`;
         document.getElementById('detailName').innerText = pocket.name;
-        document.getElementById('detailBalance').innerText = isBalanceHidden ? 'Rp •••••••' : formatRupiah(pocket.balance);
+        
+        const balContainer = document.getElementById('detailBalanceContainer');
+        if(pocket.type === 'debt') {
+            const target = pocket.target || 0;
+            balContainer.innerHTML = `<div class="debt-split-display"><span class="debt-current">${isBalanceHidden?'•••':formatRupiah(pocket.balance)}</span> <span style="font-size:16px; font-weight:400; color:#999;">/</span> <span class="debt-target">${formatRupiah(target)}</span></div>`;
+            document.getElementById('editDebtBtn').style.display = 'flex';
+        } else {
+            balContainer.innerHTML = `<div class="detail-pocket-bal">${isBalanceHidden?'Rp •••••••':formatRupiah(pocket.balance)}</div>`;
+            document.getElementById('editDebtBtn').style.display = 'none';
+        }
 
         const list = document.getElementById('pocketHistoryList'); list.innerHTML = '';
         const pTrans = currentUser.transactions.filter(t => t.pocketId === pid).sort((a,b)=>new Date(b.date)-new Date(a.date));
-        
         if(pTrans.length === 0) list.innerHTML = '<li style="text-align:center; color:#999; font-size:12px;">Belum ada transaksi</li>';
         else pTrans.forEach(t => {
-            // Assign ID if missing (for legacy data)
             if(!t.id) t.id = Date.now() + Math.random();
-            
-            const item = document.createElement('li');
-            item.style.cssText = "display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid #f0f0f0;font-size:13px;cursor:pointer;";
-            item.innerHTML = `
-                <div>${t.desc}<br><span style="font-size:10px;color:#999">${formatDate(t.date)}</span></div>
-                <div class="${t.type==='in'?'text-success':'text-danger'}" style="font-weight:600">${t.type==='in'?'+':'-'} ${formatRupiah(t.amount)}</div>
-            `;
-            item.onclick = () => openTransactionAction(t.id);
-            list.appendChild(item);
+            const item = document.createElement('li'); item.style.cssText="display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid #f0f0f0;font-size:13px;cursor:pointer;";
+            item.innerHTML = `<div>${t.desc}<br><span style="font-size:10px;color:#999">${formatDate(t.date)}</span></div><div class="${t.type==='in'?'text-success':'text-danger'}" style="font-weight:600">${t.type==='in'?'+':'-'} ${formatRupiah(t.amount)}</div>`;
+            item.onclick=()=>openTransactionAction(t.id); list.appendChild(item);
         });
     }
 
-    // --- NAVIGATION ---
     function showPage(pid) {
-        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-        document.getElementById(pid).classList.add('active');
-        
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); document.getElementById(pid).classList.add('active');
         document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-        if(pid === 'homeScreen') document.querySelector('.nav-home').classList.add('active');
-        if(pid === 'assetScreen') document.querySelector('.nav-asset').classList.add('active');
-        if(pid === 'historyScreen') {
-            document.querySelector('.nav-history').classList.add('active');
-            renderGlobalHistory();
-        }
-        if(pid === 'accountInfoScreen') document.querySelector('.nav-account').classList.add('active');
-        if(pid === 'analysisScreen') renderChart();
+        if(pid==='homeScreen') document.querySelector('.nav-home').classList.add('active');
+        if(pid==='assetScreen') document.querySelector('.nav-asset').classList.add('active');
+        if(pid==='historyScreen') { document.querySelector('.nav-history').classList.add('active'); renderGlobalHistory(); }
+        if(pid==='accountInfoScreen') document.querySelector('.nav-account').classList.add('active');
+        if(pid==='analysisScreen') renderChart();
     }
     function goBackToPrevious() { showPage('assetScreen'); }
 
-    // --- TRANSACTIONS & POCKETS ---
-    function openModal(type, specificPocketId = null) {
-        transactionType = type;
-        document.getElementById('modalTitle').innerText = type==='in' ? 'Isi Saldo' : 'Catat Pengeluaran';
-        const select = document.getElementById('pocketSelect'); select.innerHTML = '';
-        currentUser.pockets.forEach(p => {
-            const opt = document.createElement('option'); opt.value = p.id; opt.text = p.name + ` (${formatRupiah(p.balance)})`; select.appendChild(opt);
-        });
-        if(specificPocketId) select.value = specificPocketId;
-        document.getElementById('transactionModal').style.display='flex'; document.getElementById('amountInput').value=''; 
+    function openModal(t, pid=null) { transactionType=t; document.getElementById('modalTitle').innerText=t==='in'?'Isi Saldo':'Catat Pengeluaran';
+        const sel = document.getElementById('pocketSelect'); sel.innerHTML='';
+        currentUser.pockets.forEach(p=>{ const o=document.createElement('option'); o.value=p.id; o.text=p.name+` (${formatRupiah(p.balance)})`; sel.appendChild(o); });
+        if(pid) sel.value=pid; document.getElementById('transactionModal').style.display='flex'; document.getElementById('amountInput').value=''; 
     }
     
+    // --- FIX LOGIC: DEBT OVERLIMIT ---
     function processTransaction() {
-        const val = parseInt(document.getElementById('amountInput').value.replace(/\./g,'')||0);
-        const pid = parseInt(document.getElementById('pocketSelect').value);
-        if(val <= 0) return alert("Nominal salah");
-
-        const pocket = currentUser.pockets.find(p => p.id === pid);
-        if(transactionType === 'out' && val > pocket.balance) return alert("Saldo kurang!");
-
-        pocket.balance += transactionType === 'in' ? val : -val;
-        currentUser.transactions.push({ 
-            id: Date.now(), 
-            type:transactionType, 
-            amount:val, 
-            pocketId:pid, 
-            date:new Date().toISOString(), 
-            desc:transactionType==='in'?'Isi Saldo':'Pengeluaran' 
-        });
+        const val = parseInt(document.getElementById('amountInput').value.replace(/\./g,'')||0); const pid = parseInt(document.getElementById('pocketSelect').value);
+        if(val<=0) return alert("Nominal salah");
+        const pocket = currentUser.pockets.find(p=>p.id===pid);
         
-        updateUI(); document.getElementById('transactionModal').style.display = 'none';
-    }
-
-    // --- EDIT & DELETE TRANSACTIONS (NEW) ---
-    function openTransactionAction(tid) {
-        selectedTransactionId = tid;
-        document.getElementById('transactionActionModal').style.display = 'flex';
-    }
-
-    function deleteSelectedTransaction() {
-        if(!selectedTransactionId) return;
+        if(transactionType==='out' && val > pocket.balance) return alert("Saldo kurang!");
         
-        const txIndex = currentUser.transactions.findIndex(t => t.id === selectedTransactionId);
-        if(txIndex === -1) return;
-        const tx = currentUser.transactions[txIndex];
-        const pocket = currentUser.pockets.find(p => p.id === tx.pocketId);
-
-        if(confirm("Hapus transaksi ini? Saldo akan dikembalikan.")) {
-            // Revert balance
-            if(pocket) {
-                if(tx.type === 'in') pocket.balance -= tx.amount;
-                else pocket.balance += tx.amount;
-            }
-            // Remove transaction
-            currentUser.transactions.splice(txIndex, 1);
-            updateUI();
-            
-            // Refresh views
-            if(document.getElementById('pocketDetailScreen').classList.contains('active')) loadPocketDetail(pocket.id);
-            if(document.getElementById('historyScreen').classList.contains('active')) renderGlobalHistory();
-            
-            document.getElementById('transactionActionModal').style.display = 'none';
-        }
-    }
-
-    function editSelectedTransaction() {
-        if(!selectedTransactionId) return;
-        
-        const txIndex = currentUser.transactions.findIndex(t => t.id === selectedTransactionId);
-        if(txIndex === -1) return;
-        const tx = currentUser.transactions[txIndex];
-        const pocket = currentUser.pockets.find(p => p.id === tx.pocketId);
-
-        const newAmountStr = prompt("Masukkan nominal baru (tanpa titik):", tx.amount);
-        if(!newAmountStr) return;
-        
-        const newAmount = parseInt(newAmountStr);
-        if(isNaN(newAmount) || newAmount <= 0) return alert("Nominal tidak valid");
-
-        // Revert old balance
-        if(pocket) {
-            if(tx.type === 'in') pocket.balance -= tx.amount;
-            else pocket.balance += tx.amount;
-            
-            // Apply new balance
-            if(tx.type === 'in') pocket.balance += newAmount;
-            else {
-                if(newAmount > pocket.balance) {
-                    // Undo revert if failed
-                    pocket.balance -= tx.amount; 
-                    return alert("Saldo tidak cukup untuk nominal baru!");
-                }
-                pocket.balance -= newAmount;
-            }
+        // DEBT VALIDATION
+        if(pocket.type === 'debt' && transactionType === 'in') {
+            if(pocket.balance >= pocket.target) return alert("Hutang sudah lunas!");
+            if(pocket.balance + val > pocket.target) return alert(`Melebihi tagihan! Sisa: ${formatRupiah(pocket.target - pocket.balance)}`);
         }
 
-        tx.amount = newAmount;
-        updateUI();
-        
-        // Refresh views
-        if(document.getElementById('pocketDetailScreen').classList.contains('active')) loadPocketDetail(pocket.id);
-        if(document.getElementById('historyScreen').classList.contains('active')) renderGlobalHistory();
-        
-        document.getElementById('transactionActionModal').style.display = 'none';
+        pocket.balance += transactionType==='in'?val:-val;
+        currentUser.transactions.push({ id:Date.now(), type:transactionType, amount:val, pocketId:pid, date:new Date().toISOString(), desc:transactionType==='in'?'Isi Saldo':'Pengeluaran' });
+        updateUI(); document.getElementById('transactionModal').style.display='none';
     }
 
-    // --- POCKET CREATION ---
-    function selectPocketType(type) {
-        tempNewPocket.type = type;
-        document.getElementById('optRegular').classList.toggle('selected', type==='regular');
-        document.getElementById('optDebt').classList.toggle('selected', type==='debt');
-    }
-
+    function selectPocketType(t) { tempNewPocket.type=t; document.getElementById('optRegular').className=t==='regular'?'radio-option selected':'radio-option'; document.getElementById('optDebt').className=t==='debt'?'radio-option selected':'radio-option'; document.getElementById('newPocketTarget').style.display=t==='debt'?'block':'none'; }
+    function selectPocketIcon(i,c) { tempNewPocket.icon=i; tempNewPocket.color=c; }
     function createNewPocket() {
-        const name = document.getElementById('newPocketName').value;
-        if(!name) return;
-        currentUser.pockets.push({ 
-            id:Date.now(), 
-            name:name, 
-            balance:0, 
-            icon:tempNewPocket.icon, 
-            color:tempNewPocket.color,
-            type: tempNewPocket.type || 'regular'
-        });
-        updateUI(); document.getElementById('addPocketModal').style.display = 'none';
+        const n = document.getElementById('newPocketName').value; if(!n) return;
+        let tgt = 0; if(tempNewPocket.type==='debt') tgt = parseInt(document.getElementById('newPocketTarget').value.replace(/\./g,'')||0);
+        currentUser.pockets.push({ id:Date.now(), name:n, balance:0, icon:tempNewPocket.icon, color:tempNewPocket.color, type:tempNewPocket.type, target:tgt });
+        updateUI(); document.getElementById('addPocketModal').style.display='none';
     }
-    function selectPocketIcon(icon, color) { tempNewPocket.icon = icon; tempNewPocket.color = color; }
-    
-    function deleteCurrentPocket() {
-        if(currentPocketId === currentUser.pockets[0].id) return alert("Tabungan Utama tidak bisa dihapus!");
-        if(confirm("Hapus kantong ini?")) {
-            currentUser.pockets = currentUser.pockets.filter(p => p.id !== currentPocketId);
-            updateUI(); showPage('assetScreen');
-        }
+    function deleteCurrentPocket() { if(currentPocketId===currentUser.pockets[0].id) return alert("Utama tidak bisa dihapus"); if(confirm("Hapus?")) { currentUser.pockets=currentUser.pockets.filter(p=>p.id!==currentPocketId); updateUI(); showPage('assetScreen'); } }
+    function editDebtTarget() {
+        const pocket = currentUser.pockets.find(p=>p.id===currentPocketId);
+        const newT = prompt("Masukkan total hutang baru:", pocket.target);
+        if(newT) { pocket.target = parseInt(newT.replace(/\./g,'')); updateUI(); }
     }
 
-    // --- UTILS ---
-    function renderGlobalHistory() {
-        const list = document.getElementById('globalTransactionList'); list.innerHTML='';
-        const sorted = [...currentUser.transactions].sort((a,b)=>new Date(b.date)-new Date(a.date));
-        if(!sorted.length) list.innerHTML = '<li style="text-align:center;padding:20px;color:#999">Belum ada transaksi</li>';
-        else sorted.forEach(t => {
-            if(!t.id) t.id = Date.now() + Math.random();
-            const pName = currentUser.pockets.find(p => p.id == t.pocketId)?.name || 'Dihapus';
-            
-            const item = document.createElement('li');
-            item.style.cssText = "display:flex;justify-content:space-between;padding:15px;border-bottom:1px solid #f0f0f0;cursor:pointer;";
-            item.innerHTML = `
-                <div><b>${t.desc}</b> <span style="font-size:10px;background:#f3f4f6;padding:2px 5px;border-radius:4px;">${pName}</span><br><small style="color:#888">${formatDate(t.date)}</small></div>
-                <div class="${t.type==='in'?'text-success':'text-danger'}" style="font-weight:600">${t.type==='in'?'+':'-'} ${formatRupiah(t.amount)}</div>
-            `;
-            item.onclick = () => openTransactionAction(t.id);
-            list.appendChild(item);
-        });
+    function openTransactionAction(id) { selectedTransactionId=id; document.getElementById('transactionActionModal').style.display='flex'; }
+    function deleteSelectedTransaction() {
+        if(confirm("Hapus transaksi? Saldo dikembalikan.")) {
+            const idx = currentUser.transactions.findIndex(t=>t.id===selectedTransactionId); if(idx===-1)return;
+            const tx = currentUser.transactions[idx]; const p = currentUser.pockets.find(x=>x.id===tx.pocketId);
+            if(p) { if(tx.type==='in') p.balance-=tx.amount; else p.balance+=tx.amount; }
+            currentUser.transactions.splice(idx,1); updateUI(); document.getElementById('transactionActionModal').style.display='none';
+            if(document.getElementById('pocketDetailScreen').classList.contains('active')) loadPocketDetail(p.id);
+            if(document.getElementById('historyScreen').classList.contains('active')) renderGlobalHistory();
+        }
     }
-    function renderChart() {
-        const tIn = currentUser.transactions.filter(t=>t.type==='in').reduce((a,b)=>a+b.amount,0);
-        const tOut = currentUser.transactions.filter(t=>t.type==='out').reduce((a,b)=>a+b.amount,0);
-        document.getElementById('totalInDisplay').innerText = formatRupiah(tIn);
-        document.getElementById('totalOutDisplay').innerText = formatRupiah(tOut);
-        const ctx = document.getElementById('financeChart').getContext('2d');
-        if(financeChart) financeChart.destroy();
-        financeChart = new Chart(ctx, { type: 'doughnut', data: { labels: ['Masuk','Keluar'], datasets: [{ data: (tIn==0&&tOut==0)?[1]:[tIn,tOut], backgroundColor: (tIn==0&&tOut==0)?['#eee']:['#10B981','#EF4444'], borderWidth:0 }] } });
+    
+    // --- FIX LOGIC: EDIT DEBT ---
+    function editSelectedTransaction() {
+        const idx = currentUser.transactions.findIndex(t=>t.id===selectedTransactionId); if(idx===-1)return;
+        const tx = currentUser.transactions[idx]; const p = currentUser.pockets.find(x=>x.id===tx.pocketId);
+        const newA = prompt("Nominal baru:", tx.amount); if(!newA)return;
+        const val = parseInt(newA); if(isNaN(val)||val<=0)return;
+        
+        if(p) { 
+            let potentialBal = p.balance;
+            if(tx.type === 'in') potentialBal -= tx.amount; else potentialBal += tx.amount;
+            if(tx.type === 'in') potentialBal += val; else potentialBal -= val;
+            if(p.type === 'debt' && tx.type === 'in' && potentialBal > p.target) return alert("Melebihi hutang!");
+            if(potentialBal < 0) return alert("Saldo jadi minus!");
+            p.balance = potentialBal;
+        }
+        tx.amount=val; updateUI(); document.getElementById('transactionActionModal').style.display='none';
+        if(document.getElementById('pocketDetailScreen').classList.contains('active')) loadPocketDetail(p.id);
+        if(document.getElementById('historyScreen').classList.contains('active')) renderGlobalHistory();
     }
+
+    function renderGlobalHistory() { const l=document.getElementById('globalTransactionList'); l.innerHTML=''; const s=[...currentUser.transactions].sort((a,b)=>new Date(b.date)-new Date(a.date)); s.forEach(t=>{ if(!t.id)t.id=Date.now()+Math.random(); const pName=currentUser.pockets.find(p=>p.id==t.pocketId)?.name||'x'; const i=document.createElement('li'); i.style.cssText="display:flex;justify-content:space-between;padding:15px;border-bottom:1px solid #f0f0f0;cursor:pointer;"; i.innerHTML=`<div><b>${t.desc}</b> <span style="font-size:10px;background:#f3f4f6;padding:2px 5px;border-radius:4px;">${pName}</span><br><small style="color:#888">${formatDate(t.date)}</small></div><div class="${t.type==='in'?'text-success':'text-danger'}" style="font-weight:600">${t.type==='in'?'+':'-'} ${formatRupiah(t.amount)}</div>`; i.onclick=()=>openTransactionAction(t.id); l.appendChild(i); }); }
+    function renderChart() { const i=currentUser.transactions.filter(t=>t.type==='in').reduce((a,b)=>a+b.amount,0), o=currentUser.transactions.filter(t=>t.type==='out').reduce((a,b)=>a+b.amount,0); document.getElementById('totalInDisplay').innerText=formatRupiah(i); document.getElementById('totalOutDisplay').innerText=formatRupiah(o); if(financeChart)financeChart.destroy(); financeChart=new Chart(document.getElementById('financeChart').getContext('2d'),{type:'doughnut',data:{labels:['Masuk','Keluar'],datasets:[{data:(i==0&&o==0)?[1]:[i,o],backgroundColor:(i==0&&o==0)?['#eee']:['#10B981','#EF4444'],borderWidth:0}]}}); }
+    
+    function triggerRestore(){ document.getElementById('restoreInput').click(); }
+    function importData(i){ const r=new FileReader(); r.onload=e=>{ try{ const d=JSON.parse(e.target.result); if(Array.isArray(d)&&d[0].username && confirm("Timpa data?")){ localStorage.setItem('celengan_users_v4',JSON.stringify(d)); alert("Sukses!"); location.reload(); } }catch(e){ alert("File rusak"); } }; r.readAsText(i.files[0]); }
+    function exportData(){ const s=JSON.stringify(users); const a=document.createElement('a'); a.href='data:application/json;charset=utf-8,'+encodeURIComponent(s); a.download='backup.json'; a.click(); }
+    function resetBalance(){ if(confirm("Hapus semua?")) { currentUser.pockets.forEach(p=>p.balance=0); currentUser.transactions=[]; updateUI(); alert("Reset!"); } }
     function toggleBalanceVisibility(){ isBalanceHidden=!isBalanceHidden; localStorage.setItem('balance_hidden', isBalanceHidden); updateUI(); }
-    function setTheme(p, d) { 
-        document.documentElement.style.setProperty('--primary-color', p); 
-        document.documentElement.style.setProperty('--primary-dark', d); 
-        localStorage.setItem('theme_primary', p); localStorage.setItem('theme_dark', d);
-    }
-    function resetBalance() { if(confirm("Hapus semua data & reset saldo?")) { currentUser.pockets.forEach(p=>p.balance=0); currentUser.transactions=[]; updateUI(); alert("Reset!"); } }
+    function setTheme(p,d){ document.documentElement.style.setProperty('--primary-color',p); document.documentElement.style.setProperty('--primary-dark',d); localStorage.setItem('theme_primary',p); localStorage.setItem('theme_dark',d); }
     function formatInputRupiah(e){ let v=e.value.replace(/\D/g,''); e.value=v?new Intl.NumberFormat('id-ID').format(v):''; }
 </script>
 </body>
