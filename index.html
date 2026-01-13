@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>CelenganKu v2.1.3 Stable</title>
+    <title>CelenganKu Beta Version</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -28,9 +28,9 @@
             background-color: var(--bg-color); 
             width: 100vw; 
             height: 100vh; 
-            overflow: hidden; /* Mencegah overscroll pada body utama */
+            overflow: hidden; 
             display: flex; 
-            position: fixed; /* Kunci posisi body */
+            position: fixed; 
         }
 
         /* --- LAYOUT UTAMA --- */
@@ -57,14 +57,14 @@
         /* SCROLLABLE AREA */
         .screen-container { 
             flex: 1; 
-            overflow-y: auto; /* Scroll hanya di sini */
+            overflow-y: auto; 
             overflow-x: hidden;
-            padding-bottom: 100px; /* Ruang untuk navbar */
-            -webkit-overflow-scrolling: touch; /* Smooth scroll iOS */
+            padding-bottom: 100px; 
+            -webkit-overflow-scrolling: touch; 
         }
         .screen-container::-webkit-scrollbar { display: none; }
 
-        /* --- HEADER & CARDS (Desain Awal) --- */
+        /* --- HEADER & CARDS --- */
         .purple-header { 
             background: linear-gradient(180deg, var(--primary-color) 0%, var(--primary-dark) 100%); 
             padding: 40px 25px 90px 25px; 
@@ -86,9 +86,42 @@
             z-index: 2; 
         }
         
+        /* TOMBOL MATA BARU (POJOK KANAN) */
+        .toggle-privacy-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 40px;
+            height: 40px;
+            background: #1F2937; /* Warna hitam */
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            cursor: pointer;
+            z-index: 10;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            transition: background 0.2s;
+        }
+        .toggle-privacy-btn:active { transform: scale(0.95); }
+
         .balance-label { font-size: 13px; color: var(--text-grey); font-weight: 500; display: flex; align-items: center; gap: 8px; }
         .balance-amount { font-size: 30px; font-weight: 700; color: var(--text-dark); margin: 12px 0 5px 0; letter-spacing: -0.5px; line-height: 1.2; }
-        .detail-btn { background: #F3E8FF; color: var(--primary-color); padding: 6px 16px; border-radius: 20px; font-size: 12px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 5px; }
+        
+        /* LABEL TOTAL HUTANG DI BAWAH SALDO */
+        .debt-summary-pill {
+            display: inline-block;
+            background: #FEF2F2;
+            color: var(--danger);
+            font-size: 11px;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 8px;
+            margin-top: 5px;
+        }
+
+        .detail-btn { background: #F3E8FF; color: var(--primary-color); padding: 6px 16px; border-radius: 20px; font-size: 12px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 5px; margin-top: 15px; width: fit-content;}
 
         /* --- MENU GRID --- */
         .menu-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; padding: 0 20px; margin-bottom: 30px; }
@@ -149,7 +182,7 @@
             background: white; 
             display: flex; justify-content: space-around; align-items: center; 
             border-top: 1px solid #eee; 
-            z-index: 9999; /* Z-Index Tinggi agar tidak tertutup */
+            z-index: 9999; 
             padding-bottom: 10px; 
         }
         .nav-item { display: flex; flex-direction: column; align-items: center; gap: 6px; color: #9CA3AF; cursor: pointer; flex: 1; -webkit-tap-highlight-color: transparent; }
@@ -221,7 +254,7 @@
 
 <div id="oobeScreen" class="oobe-screen">
     <i class="fas fa-piggy-bank" style="font-size: 70px;"></i>
-    <h2 class="oobe-title" id="oobeTitle">CelenganKu v2.1.3</h2>
+    <h2 class="oobe-title" id="oobeTitle">CelenganKu Beta</h2>
     <p class="oobe-desc" id="oobeDesc">Memuat aplikasi...</p>
     <div class="loader"></div>
 </div>
@@ -279,14 +312,23 @@
                 </div>
                 
                 <div class="balance-card">
+                    <div class="toggle-privacy-btn" onclick="toggleBalanceVisibility()">
+                        <i class="fas fa-eye" id="toggleIconMain"></i>
+                    </div>
+
                     <div style="display: flex; justify-content: space-between; align-items: center;">
                         <div class="balance-label">
                              <span>Tabungan Utama</span>
-                             <i class="fas fa-eye eye-toggle" onclick="toggleBalanceVisibility()"></i>
                         </div>
-                        <div class="detail-btn" onclick="openMainPocketDetail()">Detail <i class="fas fa-chevron-right" style="font-size: 10px;"></i></div>
                     </div>
+                    
                     <div class="balance-amount" id="homeMainBalance">Rp 0</div>
+                    
+                    <div class="debt-summary-pill" id="homeDebtSummary" style="display:none;">
+                        Sisa Tagihan: Rp 0
+                    </div>
+
+                    <div class="detail-btn" onclick="openMainPocketDetail()">Detail <i class="fas fa-chevron-right" style="font-size: 10px;"></i></div>
                 </div>
 
                 <div class="section-title">Menu Transaksi</div>
@@ -308,7 +350,7 @@
             <div id="assetScreen" class="screen">
                 <div class="asset-header"><div class="asset-title">Aset Saya</div></div>
                 <div class="asset-summary-card" style="background: white; margin: 20px; padding: 25px; border-radius: 24px; box-shadow: 0 4px 15px rgba(0,0,0,0.03);">
-                    <div class="balance-label">Total Seluruh Aset <i class="fas fa-eye eye-toggle" onclick="toggleBalanceVisibility()"></i></div>
+                    <div class="balance-label">Total Seluruh Aset</div>
                     <div class="balance-amount" id="assetTotalBalance">Rp 0</div>
                     <div style="font-size: 11px; color: var(--text-grey); margin-top:5px;">*Kantong Hutang tidak dihitung</div>
                 </div>
@@ -403,11 +445,11 @@
 
 <div id="updateNotesModal" class="modal">
     <div class="modal-content">
-        <h3 style="text-align:center; margin-bottom:20px;">Update v2.1.3 (Final)</h3>
+        <h3 style="text-align:center; margin-bottom:20px;">Update Beta Version</h3>
         <ul class="update-list">
-            <li><i class="fas fa-check-circle" style="color:var(--success)"></i> <b>Fixed Navigasi:</b> Tombol bawah & kembali lancar.</li>
-            <li><i class="fas fa-check-circle" style="color:var(--success)"></i> <b>Fixed UI:</b> Tampilan beranda rapi seperti awal.</li>
-            <li><i class="fas fa-wallet" style="color:var(--primary-color)"></i> <b>Fitur Hutang:</b> Kelola hutang tanpa ganggu aset.</li>
+            <li><i class="fas fa-check-circle" style="color:var(--success)"></i> <b>Fitur Privasi:</b> Sembunyikan saldo dengan tombol baru.</li>
+            <li><i class="fas fa-check-circle" style="color:var(--success)"></i> <b>Info Tagihan:</b> Total hutang muncul di dashboard.</li>
+            <li><i class="fas fa-check-circle" style="color:var(--success)"></i> <b>Auto Clean:</b> Hutang lunas otomatis hilang.</li>
         </ul>
         <button class="btn-save" onclick="document.getElementById('updateNotesModal').style.display='none'">Tutup</button>
     </div>
@@ -453,7 +495,7 @@
         const title = document.getElementById('oobeTitle');
         const desc = document.getElementById('oobeDesc');
         oobe.style.display = 'flex';
-        if(type === 'startup') { title.innerText = "CelenganKu"; desc.innerText = "Memuat aplikasi..."; return new Promise(r => setTimeout(() => { oobe.style.display='none'; r(); }, 2000)); }
+        if(type === 'startup') { title.innerText = "CelenganKu Beta"; desc.innerText = "Memuat aplikasi..."; return new Promise(r => setTimeout(() => { oobe.style.display='none'; r(); }, 2000)); }
         else if(type === 'login') { title.innerText = `Halo, ${name}!`; desc.innerText = "Mempersiapkan akunmu..."; return new Promise(r => setTimeout(() => { oobe.style.display='none'; r(); }, 2000)); }
         else { title.innerText = "Sampai Jumpa!"; desc.innerText = "Terima kasih telah menabung."; return new Promise(r => setTimeout(() => { oobe.style.display='none'; location.reload(); }, 2000)); }
     }
@@ -488,26 +530,74 @@
     function changePassword(){ const o=document.getElementById('oldPass').value, n=document.getElementById('newPass').value; if(o!==currentUser.password)return alert("Password lama salah"); if(n.length<3)return alert("Pendek!"); currentUser.password=n; updateUI(); document.getElementById('oldPass').value=''; document.getElementById('newPass').value=''; alert("Sukses"); }
     function logout() { if(confirm("Keluar?")) { document.getElementById('authScreen').style.display='flex'; document.getElementById('username').value=''; document.getElementById('password').value=''; } }
 
-    function checkUpdate() { if(!localStorage.getItem('update_seen_v2.1.3')) { localStorage.setItem('update_seen_v2.1.3', 'true'); document.getElementById('updateNotesModal').style.display = 'flex'; } }
+    function checkUpdate() { if(!localStorage.getItem('update_seen_beta_1')) { localStorage.setItem('update_seen_beta_1', 'true'); document.getElementById('updateNotesModal').style.display = 'flex'; } }
     function showUpdateNotes() { document.getElementById('updateNotesModal').style.display = 'flex'; }
     function openDonation() { if(confirm("Buka Saweria?")) window.open('https://saweria.co/tetoyapping29312', '_blank'); }
 
     function initApp() { document.getElementById('userDisplay').innerText = currentUser.username; updateUI(); showPage('homeScreen'); }
+    
+    // --- UPDATED UI LOGIC: DEBT CALCULATION ---
     function updateUI() {
         const idx = users.findIndex(u=>u.username===currentUser.username); if(idx!==-1) { users[idx]=currentUser; localStorage.setItem('celengan_users_v4', JSON.stringify(users)); }
-        const main = currentUser.pockets[0]||{balance:0}; document.getElementById('homeMainBalance').innerText = isBalanceHidden?'Rp ••••':formatRupiah(main.balance);
-        const total = currentUser.pockets.reduce((a,b)=> (b.type!=='debt'?a+b.balance:a),0); document.getElementById('assetTotalBalance').innerText = isBalanceHidden?'Rp ••••':formatRupiah(total);
-        renderAssetGrid(); if(currentPocketId) loadPocketDetail(currentPocketId);
+        
+        const main = currentUser.pockets[0]||{balance:0}; 
+        document.getElementById('homeMainBalance').innerText = isBalanceHidden?'Rp ••••••••':formatRupiah(main.balance);
+        
+        // Update Total Asset (Exclude Debt)
+        const total = currentUser.pockets.reduce((a,b)=> (b.type!=='debt'?a+b.balance:a),0); 
+        document.getElementById('assetTotalBalance').innerText = isBalanceHidden?'Rp ••••••••':formatRupiah(total);
+        
+        // Calculate Total Remaining Debt
+        let totalDebt = 0;
+        let hasDebt = false;
+        currentUser.pockets.forEach(p => {
+            if(p.type === 'debt') {
+                const remaining = p.target - p.balance;
+                if(remaining > 0) totalDebt += remaining;
+                hasDebt = true;
+            }
+        });
+        
+        const debtSummary = document.getElementById('homeDebtSummary');
+        const eyeIcon = document.getElementById('toggleIconMain');
+
+        if(hasDebt && totalDebt > 0) {
+            debtSummary.style.display = 'inline-block';
+            debtSummary.innerText = isBalanceHidden ? 'Sisa Tagihan: Rp ••••••' : `Sisa Tagihan: ${formatRupiah(totalDebt)}`;
+        } else {
+            debtSummary.style.display = 'none';
+        }
+
+        if(isBalanceHidden) {
+            eyeIcon.classList.remove('fa-eye');
+            eyeIcon.classList.add('fa-eye-slash');
+        } else {
+            eyeIcon.classList.remove('fa-eye-slash');
+            eyeIcon.classList.add('fa-eye');
+        }
+
+        renderAssetGrid(); 
+        if(currentPocketId) loadPocketDetail(currentPocketId);
     }
 
+    // --- UPDATED ASSET GRID: AUTO HIDE PAID DEBTS ---
     function renderAssetGrid() {
         const grid = document.getElementById('pocketGrid'); grid.innerHTML = '';
         currentUser.pockets.forEach(p => {
+            // Logic Auto-Hide: Skip rendering if debt is paid off (balance >= target)
+            if (p.type === 'debt' && p.balance >= p.target) {
+                return; 
+            }
+
             const isMain=p.name==="Tabungan Utama", isDebt=p.type==='debt';
             let cls = isMain?'pocket-item pocket-main':'pocket-item pocket-regular'; if(isDebt) cls='pocket-item pocket-debt';
             const col = isMain?'white':p.color, bdg = isDebt?'<span class="debt-badge">Hutang</span>':'';
             const el = document.createElement('div'); el.className=cls;
-            el.innerHTML = `<div class="pocket-icon-small" style="color:${col}"><i class="fas ${p.icon}"></i></div><div>${bdg}<div class="pocket-name-text">${p.name}</div><div class="pocket-bal-text">${isBalanceHidden?'••••':formatRupiah(p.balance)}</div></div>`;
+            
+            // Display logic for debt card text
+            let displayBal = isBalanceHidden?'••••':formatRupiah(p.balance);
+            
+            el.innerHTML = `<div class="pocket-icon-small" style="color:${col}"><i class="fas ${p.icon}"></i></div><div>${bdg}<div class="pocket-name-text">${p.name}</div><div class="pocket-bal-text">${displayBal}</div></div>`;
             el.onclick = () => { showPage('pocketDetailScreen'); loadPocketDetail(p.id); }; grid.appendChild(el);
         });
         const add = document.createElement('div'); add.className='pocket-item add-new-pocket'; add.innerHTML='<i class="fas fa-plus" style="font-size:24px; margin-bottom:5px;"></i><span style="font-size:12px; font-weight:600;">Buat Baru</span>';
@@ -523,7 +613,7 @@
         const balContainer = document.getElementById('detailBalanceContainer');
         if(pocket.type === 'debt') {
             const target = pocket.target || 0;
-            balContainer.innerHTML = `<div class="debt-split-display"><span class="debt-current">${isBalanceHidden?'•••':formatRupiah(pocket.balance)}</span> <span style="font-size:16px; font-weight:400; color:#999;">/</span> <span class="debt-target">${formatRupiah(target)}</span></div>`;
+            balContainer.innerHTML = `<div class="debt-split-display"><span class="debt-current">${isBalanceHidden?'•••':formatRupiah(pocket.balance)}</span> <span style="font-size:16px; font-weight:400; color:#999;">/</span> <span class="debt-target">${isBalanceHidden?'•••':formatRupiah(target)}</span></div>`;
             document.getElementById('editDebtBtn').style.display = 'flex';
         } else {
             balContainer.innerHTML = `<div class="detail-pocket-bal">${isBalanceHidden?'Rp •••••••':formatRupiah(pocket.balance)}</div>`;
@@ -554,11 +644,15 @@
 
     function openModal(t, pid=null) { transactionType=t; document.getElementById('modalTitle').innerText=t==='in'?'Isi Saldo':'Catat Pengeluaran';
         const sel = document.getElementById('pocketSelect'); sel.innerHTML='';
-        currentUser.pockets.forEach(p=>{ const o=document.createElement('option'); o.value=p.id; o.text=p.name+` (${formatRupiah(p.balance)})`; sel.appendChild(o); });
+        currentUser.pockets.forEach(p=>{ 
+            // Skip showing fully paid debt in transaction selection
+            if(p.type === 'debt' && p.balance >= p.target) return;
+            
+            const o=document.createElement('option'); o.value=p.id; o.text=p.name+` (${formatRupiah(p.balance)})`; sel.appendChild(o); 
+        });
         if(pid) sel.value=pid; document.getElementById('transactionModal').style.display='flex'; document.getElementById('amountInput').value=''; 
     }
     
-    // --- FIX LOGIC: DEBT OVERLIMIT ---
     function processTransaction() {
         const val = parseInt(document.getElementById('amountInput').value.replace(/\./g,'')||0); const pid = parseInt(document.getElementById('pocketSelect').value);
         if(val<=0) return alert("Nominal salah");
@@ -566,7 +660,6 @@
         
         if(transactionType==='out' && val > pocket.balance) return alert("Saldo kurang!");
         
-        // DEBT VALIDATION
         if(pocket.type === 'debt' && transactionType === 'in') {
             if(pocket.balance >= pocket.target) return alert("Hutang sudah lunas!");
             if(pocket.balance + val > pocket.target) return alert(`Melebihi tagihan! Sisa: ${formatRupiah(pocket.target - pocket.balance)}`);
@@ -604,7 +697,6 @@
         }
     }
     
-    // --- FIX LOGIC: EDIT DEBT ---
     function editSelectedTransaction() {
         const idx = currentUser.transactions.findIndex(t=>t.id===selectedTransactionId); if(idx===-1)return;
         const tx = currentUser.transactions[idx]; const p = currentUser.pockets.find(x=>x.id===tx.pocketId);
@@ -631,7 +723,14 @@
     function importData(i){ const r=new FileReader(); r.onload=e=>{ try{ const d=JSON.parse(e.target.result); if(Array.isArray(d)&&d[0].username && confirm("Timpa data?")){ localStorage.setItem('celengan_users_v4',JSON.stringify(d)); alert("Sukses!"); location.reload(); } }catch(e){ alert("File rusak"); } }; r.readAsText(i.files[0]); }
     function exportData(){ const s=JSON.stringify(users); const a=document.createElement('a'); a.href='data:application/json;charset=utf-8,'+encodeURIComponent(s); a.download='backup.json'; a.click(); }
     function resetBalance(){ if(confirm("Hapus semua?")) { currentUser.pockets.forEach(p=>p.balance=0); currentUser.transactions=[]; updateUI(); alert("Reset!"); } }
-    function toggleBalanceVisibility(){ isBalanceHidden=!isBalanceHidden; localStorage.setItem('balance_hidden', isBalanceHidden); updateUI(); }
+    
+    // FUNCTION TOGGLE SALDO (MATA)
+    function toggleBalanceVisibility(){ 
+        isBalanceHidden=!isBalanceHidden; 
+        localStorage.setItem('balance_hidden', isBalanceHidden); 
+        updateUI(); 
+    }
+    
     function setTheme(p,d){ document.documentElement.style.setProperty('--primary-color',p); document.documentElement.style.setProperty('--primary-dark',d); localStorage.setItem('theme_primary',p); localStorage.setItem('theme_dark',d); }
     function formatInputRupiah(e){ let v=e.value.replace(/\D/g,''); e.value=v?new Intl.NumberFormat('id-ID').format(v):''; }
 </script>
