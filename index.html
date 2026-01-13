@@ -1,10 +1,11 @@
 
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>CelenganKu Beta Version</title>
+    <title>CelenganKu v2.1.2 (Beta)</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -254,7 +255,7 @@
 
 <div id="oobeScreen" class="oobe-screen">
     <i class="fas fa-piggy-bank" style="font-size: 70px;"></i>
-    <h2 class="oobe-title" id="oobeTitle">CelenganKu Beta</h2>
+    <h2 class="oobe-title" id="oobeTitle">CelenganKu v2.1.2</h2>
     <p class="oobe-desc" id="oobeDesc">Memuat aplikasi...</p>
     <div class="loader"></div>
 </div>
@@ -445,12 +446,15 @@
 
 <div id="updateNotesModal" class="modal">
     <div class="modal-content">
-        <h3 style="text-align:center; margin-bottom:20px;">Update Beta Version</h3>
+        <h3 style="text-align:center; margin-bottom:20px;">Update v2.1.2 (Beta)</h3>
+        <div style="margin-bottom:15px; font-size:14px; color:#333; font-weight:600;">Update CelenganKu v2.1.2 (Beta) is here!</div>
         <ul class="update-list">
-            <li><i class="fas fa-check-circle" style="color:var(--success)"></i> <b>Fitur Privasi:</b> Sembunyikan saldo dengan tombol baru.</li>
-            <li><i class="fas fa-check-circle" style="color:var(--success)"></i> <b>Info Tagihan:</b> Total hutang muncul di dashboard.</li>
-            <li><i class="fas fa-check-circle" style="color:var(--success)"></i> <b>Auto Clean:</b> Hutang lunas otomatis hilang.</li>
+            <li><i class="fas fa-check-circle" style="color:var(--success)"></i> <b>Fitur Hutang:</b> Total hutang & sisa tagihan terlihat jelas di depan.</li>
+            <li><i class="fas fa-magic" style="color:var(--primary-color)"></i> <b>Auto-Clean:</b> Hutang lunas otomatis hilang.</li>
+            <li><i class="fas fa-eye" style="color:var(--primary-color)"></i> <b>UI Update:</b> Tampilan tombol hide balance baru.</li>
+            <li><i class="fas fa-wrench" style="color:var(--danger)"></i> <b>Fix Navigasi:</b> Tombol Back aman (tidak keluar Chrome).</li>
         </ul>
+        <p style="text-align:center; font-size:12px; color:#666; margin-top:10px;">Kalau ada kendala lapor ya, Makasih!</p>
         <button class="btn-save" onclick="document.getElementById('updateNotesModal').style.display='none'">Tutup</button>
     </div>
 </div>
@@ -464,13 +468,29 @@
     let selectedTransactionId = null, financeChart = null;
 
     window.addEventListener('load', () => {
-        // Back Button Logic
+        // --- FIX NAVIGASI (BACK BUTTON) ---
+        // Mencegah keluar dari browser saat tekan back
         history.pushState(null, null, location.href);
         window.onpopstate = function () {
-            if(document.getElementById('authScreen').style.display === 'none') {
-                if(document.getElementById('pocketDetailScreen').classList.contains('active')) showPage('assetScreen');
-                else if(!document.getElementById('homeScreen').classList.contains('active')) showPage('homeScreen');
-                history.pushState(null, null, location.href); // Stay on app
+            // Jika di halaman auth, biarkan user keluar atau tetap (opsional)
+            if(document.getElementById('authScreen').style.display !== 'none') {
+                // Biarkan default history behavior jika di login screen (atau block jika mau)
+            } else {
+                // Jika di dalam aplikasi
+                if(document.getElementById('pocketDetailScreen').classList.contains('active')) {
+                    showPage('assetScreen'); // Balik ke list aset
+                    history.pushState(null, null, location.href); // Kunci lagi
+                }
+                else if(!document.getElementById('homeScreen').classList.contains('active')) {
+                    showPage('homeScreen'); // Balik ke home
+                    history.pushState(null, null, location.href); // Kunci lagi
+                }
+                else {
+                    // Jika sudah di home, user mungkin mau keluar? 
+                    // Kita bisa tahan atau biarkan keluar. 
+                    // Uncomment bawah ini kalau mau benar2 maksa stay di app:
+                    // history.pushState(null, null, location.href);
+                }
             }
         };
 
@@ -495,7 +515,7 @@
         const title = document.getElementById('oobeTitle');
         const desc = document.getElementById('oobeDesc');
         oobe.style.display = 'flex';
-        if(type === 'startup') { title.innerText = "CelenganKu Beta"; desc.innerText = "Memuat aplikasi..."; return new Promise(r => setTimeout(() => { oobe.style.display='none'; r(); }, 2000)); }
+        if(type === 'startup') { title.innerText = "CelenganKu v2.1.2"; desc.innerText = "Memuat aplikasi..."; return new Promise(r => setTimeout(() => { oobe.style.display='none'; r(); }, 2000)); }
         else if(type === 'login') { title.innerText = `Halo, ${name}!`; desc.innerText = "Mempersiapkan akunmu..."; return new Promise(r => setTimeout(() => { oobe.style.display='none'; r(); }, 2000)); }
         else { title.innerText = "Sampai Jumpa!"; desc.innerText = "Terima kasih telah menabung."; return new Promise(r => setTimeout(() => { oobe.style.display='none'; location.reload(); }, 2000)); }
     }
@@ -530,24 +550,28 @@
     function changePassword(){ const o=document.getElementById('oldPass').value, n=document.getElementById('newPass').value; if(o!==currentUser.password)return alert("Password lama salah"); if(n.length<3)return alert("Pendek!"); currentUser.password=n; updateUI(); document.getElementById('oldPass').value=''; document.getElementById('newPass').value=''; alert("Sukses"); }
     function logout() { if(confirm("Keluar?")) { document.getElementById('authScreen').style.display='flex'; document.getElementById('username').value=''; document.getElementById('password').value=''; } }
 
-    function checkUpdate() { if(!localStorage.getItem('update_seen_beta_1')) { localStorage.setItem('update_seen_beta_1', 'true'); document.getElementById('updateNotesModal').style.display = 'flex'; } }
+    function checkUpdate() { 
+        // Ubah key ini supaya popup muncul lagi di user
+        if(!localStorage.getItem('update_seen_v2.1.2_beta')) { 
+            localStorage.setItem('update_seen_v2.1.2_beta', 'true'); 
+            document.getElementById('updateNotesModal').style.display = 'flex'; 
+        } 
+    }
     function showUpdateNotes() { document.getElementById('updateNotesModal').style.display = 'flex'; }
     function openDonation() { if(confirm("Buka Saweria?")) window.open('https://saweria.co/tetoyapping29312', '_blank'); }
 
     function initApp() { document.getElementById('userDisplay').innerText = currentUser.username; updateUI(); showPage('homeScreen'); }
     
-    // --- UPDATED UI LOGIC: DEBT CALCULATION ---
+    // --- UI LOGIC: DEBT CALCULATION ---
     function updateUI() {
         const idx = users.findIndex(u=>u.username===currentUser.username); if(idx!==-1) { users[idx]=currentUser; localStorage.setItem('celengan_users_v4', JSON.stringify(users)); }
         
         const main = currentUser.pockets[0]||{balance:0}; 
         document.getElementById('homeMainBalance').innerText = isBalanceHidden?'Rp ••••••••':formatRupiah(main.balance);
         
-        // Update Total Asset (Exclude Debt)
         const total = currentUser.pockets.reduce((a,b)=> (b.type!=='debt'?a+b.balance:a),0); 
         document.getElementById('assetTotalBalance').innerText = isBalanceHidden?'Rp ••••••••':formatRupiah(total);
         
-        // Calculate Total Remaining Debt
         let totalDebt = 0;
         let hasDebt = false;
         currentUser.pockets.forEach(p => {
@@ -580,11 +604,11 @@
         if(currentPocketId) loadPocketDetail(currentPocketId);
     }
 
-    // --- UPDATED ASSET GRID: AUTO HIDE PAID DEBTS ---
+    // --- ASSET GRID: AUTO HIDE PAID DEBTS ---
     function renderAssetGrid() {
         const grid = document.getElementById('pocketGrid'); grid.innerHTML = '';
         currentUser.pockets.forEach(p => {
-            // Logic Auto-Hide: Skip rendering if debt is paid off (balance >= target)
+            // Logic Auto-Clean: Skip rendering if debt is paid off (balance >= target)
             if (p.type === 'debt' && p.balance >= p.target) {
                 return; 
             }
@@ -594,7 +618,6 @@
             const col = isMain?'white':p.color, bdg = isDebt?'<span class="debt-badge">Hutang</span>':'';
             const el = document.createElement('div'); el.className=cls;
             
-            // Display logic for debt card text
             let displayBal = isBalanceHidden?'••••':formatRupiah(p.balance);
             
             el.innerHTML = `<div class="pocket-icon-small" style="color:${col}"><i class="fas ${p.icon}"></i></div><div>${bdg}<div class="pocket-name-text">${p.name}</div><div class="pocket-bal-text">${displayBal}</div></div>`;
@@ -645,9 +668,7 @@
     function openModal(t, pid=null) { transactionType=t; document.getElementById('modalTitle').innerText=t==='in'?'Isi Saldo':'Catat Pengeluaran';
         const sel = document.getElementById('pocketSelect'); sel.innerHTML='';
         currentUser.pockets.forEach(p=>{ 
-            // Skip showing fully paid debt in transaction selection
             if(p.type === 'debt' && p.balance >= p.target) return;
-            
             const o=document.createElement('option'); o.value=p.id; o.text=p.name+` (${formatRupiah(p.balance)})`; sel.appendChild(o); 
         });
         if(pid) sel.value=pid; document.getElementById('transactionModal').style.display='flex'; document.getElementById('amountInput').value=''; 
@@ -723,14 +744,7 @@
     function importData(i){ const r=new FileReader(); r.onload=e=>{ try{ const d=JSON.parse(e.target.result); if(Array.isArray(d)&&d[0].username && confirm("Timpa data?")){ localStorage.setItem('celengan_users_v4',JSON.stringify(d)); alert("Sukses!"); location.reload(); } }catch(e){ alert("File rusak"); } }; r.readAsText(i.files[0]); }
     function exportData(){ const s=JSON.stringify(users); const a=document.createElement('a'); a.href='data:application/json;charset=utf-8,'+encodeURIComponent(s); a.download='backup.json'; a.click(); }
     function resetBalance(){ if(confirm("Hapus semua?")) { currentUser.pockets.forEach(p=>p.balance=0); currentUser.transactions=[]; updateUI(); alert("Reset!"); } }
-    
-    // FUNCTION TOGGLE SALDO (MATA)
-    function toggleBalanceVisibility(){ 
-        isBalanceHidden=!isBalanceHidden; 
-        localStorage.setItem('balance_hidden', isBalanceHidden); 
-        updateUI(); 
-    }
-    
+    function toggleBalanceVisibility(){ isBalanceHidden=!isBalanceHidden; localStorage.setItem('balance_hidden', isBalanceHidden); updateUI(); }
     function setTheme(p,d){ document.documentElement.style.setProperty('--primary-color',p); document.documentElement.style.setProperty('--primary-dark',d); localStorage.setItem('theme_primary',p); localStorage.setItem('theme_dark',d); }
     function formatInputRupiah(e){ let v=e.value.replace(/\D/g,''); e.value=v?new Intl.NumberFormat('id-ID').format(v):''; }
 </script>
