@@ -1,11 +1,9 @@
-
-
 <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>CelenganKu v2.1.2 (Beta)</title>
+    <title>CelenganKu v2.2.0 (Beta)</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -34,94 +32,29 @@
             position: fixed; 
         }
 
+        /* --- PRINT STYLE (PENTING BUAT KASIR) --- */
+        @media print {
+            body * { visibility: hidden; }
+            #receiptArea, #receiptArea * { visibility: visible; }
+            #receiptArea { position: absolute; left: 0; top: 0; width: 100%; margin: 0; padding: 0; background: white; color: black; }
+            .modal, .app-container, .bottom-nav { display: none !important; }
+        }
+
         /* --- LAYOUT UTAMA --- */
-        .app-container { 
-            width: 100%; 
-            height: 100%; 
-            display: flex; 
-            flex-direction: column; 
-            background: #F8F9FA; 
-            position: relative; 
-        }
-
+        .app-container { width: 100%; height: 100%; display: flex; flex-direction: column; background: #F8F9FA; position: relative; }
         .sidebar { display: none; }
-
-        .main-area { 
-            flex: 1; 
-            position: relative; 
-            overflow: hidden; 
-            display: flex; 
-            flex-direction: column;
-            height: 100%;
-        }
-        
-        /* SCROLLABLE AREA */
-        .screen-container { 
-            flex: 1; 
-            overflow-y: auto; 
-            overflow-x: hidden;
-            padding-bottom: 100px; 
-            -webkit-overflow-scrolling: touch; 
-        }
+        .main-area { flex: 1; position: relative; overflow: hidden; display: flex; flex-direction: column; height: 100%; }
+        .screen-container { flex: 1; overflow-y: auto; overflow-x: hidden; padding-bottom: 100px; -webkit-overflow-scrolling: touch; }
         .screen-container::-webkit-scrollbar { display: none; }
 
         /* --- HEADER & CARDS --- */
-        .purple-header { 
-            background: linear-gradient(180deg, var(--primary-color) 0%, var(--primary-dark) 100%); 
-            padding: 40px 25px 90px 25px; 
-            color: white; 
-            border-bottom-left-radius: 30px; 
-            border-bottom-right-radius: 30px; 
-            position: relative; 
-            z-index: 1; 
-            flex-shrink: 0;
-        }
-        
-        .balance-card { 
-            background: white; 
-            margin: -70px 20px 25px 20px; 
-            padding: 25px; 
-            border-radius: 24px; 
-            box-shadow: 0 8px 20px rgba(0,0,0,0.06); 
-            position: relative; 
-            z-index: 2; 
-        }
-        
-        /* TOMBOL MATA BARU (POJOK KANAN) */
-        .toggle-privacy-btn {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            width: 40px;
-            height: 40px;
-            background: #1F2937; /* Warna hitam */
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            cursor: pointer;
-            z-index: 10;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-            transition: background 0.2s;
-        }
+        .purple-header { background: linear-gradient(180deg, var(--primary-color) 0%, var(--primary-dark) 100%); padding: 40px 25px 90px 25px; color: white; border-bottom-left-radius: 30px; border-bottom-right-radius: 30px; position: relative; z-index: 1; flex-shrink: 0; }
+        .balance-card { background: white; margin: -70px 20px 25px 20px; padding: 25px; border-radius: 24px; box-shadow: 0 8px 20px rgba(0,0,0,0.06); position: relative; z-index: 2; }
+        .toggle-privacy-btn { position: absolute; top: 20px; right: 20px; width: 40px; height: 40px; background: #1F2937; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; cursor: pointer; z-index: 10; box-shadow: 0 4px 10px rgba(0,0,0,0.2); transition: background 0.2s; }
         .toggle-privacy-btn:active { transform: scale(0.95); }
-
         .balance-label { font-size: 13px; color: var(--text-grey); font-weight: 500; display: flex; align-items: center; gap: 8px; }
         .balance-amount { font-size: 30px; font-weight: 700; color: var(--text-dark); margin: 12px 0 5px 0; letter-spacing: -0.5px; line-height: 1.2; }
-        
-        /* LABEL TOTAL HUTANG DI BAWAH SALDO */
-        .debt-summary-pill {
-            display: inline-block;
-            background: #FEF2F2;
-            color: var(--danger);
-            font-size: 11px;
-            font-weight: 600;
-            padding: 4px 10px;
-            border-radius: 8px;
-            margin-top: 5px;
-        }
-
+        .debt-summary-pill { display: inline-block; background: #FEF2F2; color: var(--danger); font-size: 11px; font-weight: 600; padding: 4px 10px; border-radius: 8px; margin-top: 5px; }
         .detail-btn { background: #F3E8FF; color: var(--primary-color); padding: 6px 16px; border-radius: 20px; font-size: 12px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 5px; margin-top: 15px; width: fit-content;}
 
         /* --- MENU GRID --- */
@@ -131,7 +64,7 @@
         .action-btn:active .icon-box { transform: scale(0.95); }
         .action-label { font-size: 11px; font-weight: 500; color: #555; text-align: center; }
 
-        /* --- ASET & KANTONG STYLE --- */
+        /* --- ASET, KANTONG & POS STYLE --- */
         .asset-header { padding: 40px 20px 15px 20px; background: white; border-bottom: 1px solid #f0f0f0; }
         .asset-title { font-size: 24px; font-weight: 700; color: var(--text-dark); }
         .pockets-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 20px; }
@@ -148,6 +81,13 @@
         .pocket-bal-text { font-size: 16px; font-weight: 700; color: var(--text-dark); }
         .add-new-pocket { border: 2px dashed #CBD5E1; background: transparent; color: var(--primary-color); display: flex; flex-direction: column; justify-content: center; align-items: center; box-shadow: none; }
 
+        /* --- POS / KASIR SPECIFIC --- */
+        .pos-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 10px; margin-bottom: 15px; }
+        .cart-list { list-style: none; margin-top: 15px; }
+        .cart-item { display: flex; justify-content: space-between; align-items: center; padding: 12px; background: white; border-radius: 12px; margin-bottom: 8px; border: 1px solid #eee; }
+        .cart-total-box { background: #1F2937; color: white; padding: 20px; border-radius: 20px; margin-top: 20px; display: flex; justify-content: space-between; align-items: center; font-size: 18px; font-weight: 700; }
+        .receipt-preview { background: #fff; padding: 20px; border: 1px dashed #ccc; font-family: 'Courier New', Courier, monospace; font-size: 12px; margin-bottom: 15px; }
+
         /* --- DETAIL KANTONG --- */
         .detail-header { padding: 40px 20px 20px 20px; display: flex; align-items: center; gap: 15px; background: white; }
         .detail-content { text-align: center; padding: 40px 20px; background: white; border-bottom-left-radius: 30px; border-bottom-right-radius: 30px; box-shadow: 0 4px 20px rgba(0,0,0,0.03); margin-bottom: 20px; }
@@ -162,7 +102,7 @@
         .detail-icon-circle { width: 55px; height: 55px; border-radius: 50%; background: #F8F9FA; display: flex; justify-content: center; align-items: center; font-size: 22px; color: var(--primary-color); border: 1px solid #eee; }
 
         /* --- UTILS --- */
-        .section-title { padding: 0 25px; margin-bottom: 15px; font-weight: 700; color: var(--text-dark); font-size: 16px; }
+        .section-title { padding: 0 25px; margin-bottom: 15px; font-weight: 700; color: var(--text-dark); font-size: 16px; display: flex; justify-content: space-between; align-items: center;}
         .info-card { background: white; margin: 20px; padding: 25px; border-radius: 24px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); }
         .form-group { margin-bottom: 15px; }
         .form-group label { display: block; font-size: 12px; color: var(--text-grey); margin-bottom: 5px; font-weight: 500;}
@@ -170,6 +110,7 @@
         .btn-save { width: 100%; padding: 16px; background: var(--primary-color); color: white; border: none; border-radius: 14px; font-weight: 600; cursor: pointer; font-size: 15px; }
         .btn-outline { background: white; color: var(--text-grey); border: 1px solid #ddd; }
         .btn-danger { background: var(--danger); color: white; }
+        .btn-small { padding: 8px 12px; font-size: 11px; width: auto; border-radius: 8px;}
         .password-wrapper { position: relative; width: 100%; }
         .password-toggle-icon { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: #9CA3AF; cursor: pointer; font-size: 18px; }
         .radio-group { display: flex; gap: 10px; margin-bottom: 15px; }
@@ -177,15 +118,7 @@
         .radio-option.selected { border-color: var(--primary-color); background: #F3E8FF; color: var(--primary-color); font-weight: 600; }
 
         /* --- BOTTOM NAV (FIXED) --- */
-        .bottom-nav { 
-            position: fixed; 
-            bottom: 0; left: 0; width: 100%; height: 80px; 
-            background: white; 
-            display: flex; justify-content: space-around; align-items: center; 
-            border-top: 1px solid #eee; 
-            z-index: 9999; 
-            padding-bottom: 10px; 
-        }
+        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; height: 80px; background: white; display: flex; justify-content: space-around; align-items: center; border-top: 1px solid #eee; z-index: 9999; padding-bottom: 10px; }
         .nav-item { display: flex; flex-direction: column; align-items: center; gap: 6px; color: #9CA3AF; cursor: pointer; flex: 1; -webkit-tap-highlight-color: transparent; }
         .nav-item.active { color: var(--primary-color); }
         .nav-item i { font-size: 22px; pointer-events: none; }
@@ -255,7 +188,7 @@
 
 <div id="oobeScreen" class="oobe-screen">
     <i class="fas fa-piggy-bank" style="font-size: 70px;"></i>
-    <h2 class="oobe-title" id="oobeTitle">CelenganKu v2.1.2</h2>
+    <h2 class="oobe-title" id="oobeTitle">CelenganKu v2.2.0</h2>
     <p class="oobe-desc" id="oobeDesc">Memuat aplikasi...</p>
     <div class="loader"></div>
 </div>
@@ -294,6 +227,7 @@
         <div class="sidebar-logo"><i class="fas fa-piggy-bank"></i> CelenganKu.</div>
         <div class="sidebar-item active" onclick="showPage('homeScreen')"><i class="fas fa-home"></i> Dashboard</div>
         <div class="sidebar-item" onclick="showPage('assetScreen')"><i class="fas fa-wallet"></i> Aset & Kantong</div>
+        <div class="sidebar-item" onclick="showPage('posScreen')"><i class="fas fa-cash-register"></i> Kasir Toko</div>
         <div class="sidebar-item" onclick="showPage('historyScreen')"><i class="fas fa-list-ul"></i> Riwayat</div>
         <div class="sidebar-item" onclick="showPage('analysisScreen')"><i class="fas fa-chart-pie"></i> Analisis</div>
         <div class="sidebar-item" onclick="showPage('accountInfoScreen')"><i class="fas fa-user-shield"></i> Akun Saya</div>
@@ -336,6 +270,7 @@
                 <div class="menu-grid">
                     <div class="action-btn" onclick="openModal('in')"><div class="icon-box"><i class="fas fa-plus-square"></i></div><span class="action-label">Isi Saldo</span></div>
                     <div class="action-btn" onclick="openModal('out')"><div class="icon-box"><i class="fas fa-arrow-up"></i></div><span class="action-label">Pengeluaran</span></div>
+                    <div class="action-btn" onclick="showPage('posScreen')"><div class="icon-box" style="color:#2563EB;"><i class="fas fa-cash-register"></i></div><span class="action-label">Kasir</span></div>
                     <div class="action-btn" onclick="showPage('historyScreen')"><div class="icon-box"><i class="fas fa-history"></i></div><span class="action-label">Riwayat</span></div>
                     <div class="action-btn" onclick="showPage('analysisScreen')"><div class="icon-box" style="color:#F59E0B;"><i class="fas fa-chart-pie"></i></div><span class="action-label">Analisis</span></div>
                     <div class="action-btn" onclick="showUpdateNotes()"><div class="icon-box" style="color:#10B981;"><i class="fas fa-bullhorn"></i></div><span class="action-label">Info Update</span></div>
@@ -345,6 +280,32 @@
                 <div class="info-card" style="display: flex; align-items: center; gap: 15px;">
                     <div style="width: 50px; height: 50px; background: #E0F2FE; border-radius: 50%; display: flex; justify-content: center; align-items: center; color: #0284C7; font-size: 20px;"><i class="fas fa-lightbulb"></i></div>
                     <div><h4 style="font-size: 14px; margin-bottom: 3px;">Tips Keuangan</h4><p style="font-size: 12px; color: var(--text-grey);">Pisahkan uang jajan dan tabunganmu menggunakan fitur <b>Kantong</b> di menu Aset.</p></div>
+                </div>
+            </div>
+
+            <div id="posScreen" class="screen">
+                <div class="asset-header"><div class="asset-title">Kasir Toko <i class="fas fa-cash-register" style="font-size:20px; color:var(--primary-color);"></i></div></div>
+                <div style="padding: 20px;">
+                    <div class="info-card" style="margin:0 0 20px 0;">
+                        <div class="form-group"><label>Nama Barang</label><input type="text" id="posItemName" class="form-input" placeholder="Cth: Kopi Hitam"></div>
+                        <div class="pos-grid">
+                            <div class="form-group"><label>Harga</label><input type="tel" id="posItemPrice" class="form-input" placeholder="Rp" oninput="formatInputRupiah(this)"></div>
+                            <div class="form-group"><label>Jml</label><input type="number" id="posItemQty" class="form-input" value="1" style="text-align:center;"></div>
+                        </div>
+                        <button class="btn-save" onclick="posAddToCart()">+ Masuk Keranjang</button>
+                    </div>
+
+                    <div class="section-title">Keranjang Belanja <span id="cartCount" style="font-size:12px; background:#ddd; padding:2px 8px; border-radius:10px;">0 item</span></div>
+                    <ul class="cart-list" id="posCartList">
+                        </ul>
+                    <div class="cart-total-box">
+                        <span>Total</span>
+                        <span id="posTotalDisplay">Rp 0</span>
+                    </div>
+                    <div style="display:flex; gap:10px; margin-top:15px;">
+                        <button class="btn-save btn-danger" onclick="posResetCart()" style="flex:1;">Reset</button>
+                        <button class="btn-save" onclick="posCheckout()" style="flex:2;">Checkout & Simpan</button>
+                    </div>
                 </div>
             </div>
 
@@ -375,13 +336,15 @@
                 <div style="height: 10px; background: #F8F9FA;"></div>
                 <div style="padding: 25px;">
                     <h4 style="font-size: 16px; margin-bottom: 20px; font-weight: 700;">Riwayat Transaksi</h4>
-                    <p style="font-size:11px; color:#888; margin-bottom:10px;">Klik transaksi untuk Edit/Hapus</p>
                     <ul id="pocketHistoryList" style="list-style: none;"></ul>
                 </div>
             </div>
 
             <div id="historyScreen" class="screen">
-                <div class="section-title" style="margin-top: 25px;">Semua Riwayat</div>
+                <div class="section-title" style="margin-top: 25px;">
+                    Semua Riwayat
+                    <button class="btn-save btn-small" style="background:#4B5563;" onclick="openManualHistoryModal()">+ Catat Manual</button>
+                </div>
                 <div class="info-card"><ul id="globalTransactionList" style="list-style: none;"></ul></div>
             </div>
 
@@ -423,10 +386,44 @@
     </div>
 </div>
 
+<div id="manualHistoryModal" class="modal">
+    <div class="modal-content">
+        <h3 style="text-align:center; margin-bottom:15px;">Catat Riwayat Lama</h3>
+        <p style="text-align:center; color:#666; font-size:12px; margin-bottom:15px;">Untuk mencatat hutang/transaksi yang sudah lalu tapi belum masuk aplikasi.</p>
+        
+        <div class="form-group"><label>Deskripsi (Wajib)</label><input type="text" id="manualDesc" class="form-input" placeholder="Cth: Lunas Hutang Si A"></div>
+        <div class="radio-group">
+            <div class="radio-option selected" id="optManIn" onclick="setManualType('in')">Pemasukan</div>
+            <div class="radio-option" id="optManOut" onclick="setManualType('out')">Pengeluaran</div>
+        </div>
+        <div class="form-group"><label>Nominal</label><input type="tel" id="manualAmount" class="form-input" placeholder="Rp 0" oninput="formatInputRupiah(this)"></div>
+        <div class="form-group"><label>Tanggal Transaksi</label><input type="date" id="manualDate" class="form-input"></div>
+        
+        <button class="btn-save" onclick="saveManualHistory()">Simpan ke Riwayat</button>
+        <button class="btn-save btn-outline" style="margin-top: 10px; border:none;" onclick="document.getElementById('manualHistoryModal').style.display='none'">Batal</button>
+    </div>
+</div>
+
+<div id="receiptModal" class="modal">
+    <div class="modal-content" style="max-width:350px;">
+        <h3 style="text-align:center; margin-bottom:10px;">Struk Transaksi</h3>
+        <div id="receiptArea">
+            <div style="text-align:center; font-weight:bold; margin-bottom:10px; font-size:16px;">TOKO SAYA</div>
+            <div style="text-align:center; font-size:12px; margin-bottom:15px;" id="receiptDate"></div>
+            <hr style="border-top:1px dashed #000; margin-bottom:10px;">
+            <div id="receiptItems"></div>
+            <hr style="border-top:1px dashed #000; margin:10px 0;">
+            <div style="display:flex; justify-content:space-between; font-weight:bold;"><span>TOTAL</span><span id="receiptTotal"></span></div>
+            <div style="text-align:center; margin-top:20px; font-size:10px;">Terima Kasih</div>
+        </div>
+        <button class="btn-save" onclick="window.print()" style="margin-top:20px; background:#1F2937;"><i class="fas fa-print"></i> Cetak Sekarang</button>
+        <button class="btn-save btn-outline" style="margin-top: 10px; border:none;" onclick="document.getElementById('receiptModal').style.display='none'">Tutup</button>
+    </div>
+</div>
+
 <div id="transactionActionModal" class="modal">
     <div class="modal-content">
         <h3 style="text-align:center; margin-bottom:15px;">Aksi Transaksi</h3>
-        <p style="text-align:center; color:#666; margin-bottom:20px; font-size:13px;">Pilih tindakan untuk riwayat ini</p>
         <div style="display:flex; gap:10px;"><button class="btn-save" onclick="editSelectedTransaction()">Edit Nominal</button><button class="btn-save btn-danger" onclick="deleteSelectedTransaction()">Hapus</button></div>
         <button class="btn-save btn-outline" style="margin-top: 10px; border:none;" onclick="document.getElementById('transactionActionModal').style.display='none'">Batal</button>
     </div>
@@ -446,15 +443,13 @@
 
 <div id="updateNotesModal" class="modal">
     <div class="modal-content">
-        <h3 style="text-align:center; margin-bottom:20px;">Update v2.1.2 (Beta)</h3>
-        <div style="margin-bottom:15px; font-size:14px; color:#333; font-weight:600;">Update CelenganKu v2.1.2 (Beta) is here!</div>
+        <h3 style="text-align:center; margin-bottom:20px;">Update v2.2.0 (Beta)</h3>
+        <div style="margin-bottom:15px; font-size:14px; color:#333; font-weight:600;">Apa yang baru?</div>
         <ul class="update-list">
-            <li><i class="fas fa-check-circle" style="color:var(--success)"></i> <b>Fitur Hutang:</b> Total hutang & sisa tagihan terlihat jelas di depan.</li>
-            <li><i class="fas fa-magic" style="color:var(--primary-color)"></i> <b>Auto-Clean:</b> Hutang lunas otomatis hilang.</li>
-            <li><i class="fas fa-eye" style="color:var(--primary-color)"></i> <b>UI Update:</b> Tampilan tombol hide balance baru.</li>
-            <li><i class="fas fa-wrench" style="color:var(--danger)"></i> <b>Fix Navigasi:</b> Tombol Back aman (tidak keluar Chrome).</li>
+            <li><i class="fas fa-cash-register" style="color:var(--primary-color)"></i> <b>Fitur Kasir:</b> Hitung belanjaan dan cetak struk langsung!</li>
+            <li><i class="fas fa-history" style="color:var(--primary-color)"></i> <b>Catat Manual:</b> Bisa input riwayat/hutang lama yang sudah lunas tapi belum kecatat.</li>
+            <li><i class="fas fa-check-circle" style="color:var(--success)"></i> <b>UI & Fixes:</b> Perbaikan tampilan dan navigasi.</li>
         </ul>
-        <p style="text-align:center; font-size:12px; color:#666; margin-top:10px;">Kalau ada kendala lapor ya, Makasih!</p>
         <button class="btn-save" onclick="document.getElementById('updateNotesModal').style.display='none'">Tutup</button>
     </div>
 </div>
@@ -466,31 +461,16 @@
     let currentAuthMode = 'login', transactionType = 'in', isBalanceHidden = localStorage.getItem('balance_hidden') === 'true';
     let currentPocketId = null, tempNewPocket = { icon: 'fa-wallet', color: '#8B5CF6', type: 'regular' };
     let selectedTransactionId = null, financeChart = null;
+    let manualType = 'in'; // Tipe transaksi manual history
+    let posCart = []; // Keranjang Kasir
 
     window.addEventListener('load', () => {
-        // --- FIX NAVIGASI (BACK BUTTON) ---
-        // Mencegah keluar dari browser saat tekan back
         history.pushState(null, null, location.href);
         window.onpopstate = function () {
-            // Jika di halaman auth, biarkan user keluar atau tetap (opsional)
-            if(document.getElementById('authScreen').style.display !== 'none') {
-                // Biarkan default history behavior jika di login screen (atau block jika mau)
-            } else {
-                // Jika di dalam aplikasi
-                if(document.getElementById('pocketDetailScreen').classList.contains('active')) {
-                    showPage('assetScreen'); // Balik ke list aset
-                    history.pushState(null, null, location.href); // Kunci lagi
-                }
-                else if(!document.getElementById('homeScreen').classList.contains('active')) {
-                    showPage('homeScreen'); // Balik ke home
-                    history.pushState(null, null, location.href); // Kunci lagi
-                }
-                else {
-                    // Jika sudah di home, user mungkin mau keluar? 
-                    // Kita bisa tahan atau biarkan keluar. 
-                    // Uncomment bawah ini kalau mau benar2 maksa stay di app:
-                    // history.pushState(null, null, location.href);
-                }
+            if(document.getElementById('authScreen').style.display !== 'none') {} else {
+                if(document.getElementById('pocketDetailScreen').classList.contains('active')) { showPage('assetScreen'); history.pushState(null, null, location.href); }
+                else if(document.getElementById('posScreen').classList.contains('active')) { showPage('homeScreen'); history.pushState(null, null, location.href); }
+                else if(!document.getElementById('homeScreen').classList.contains('active')) { showPage('homeScreen'); history.pushState(null, null, location.href); }
             }
         };
 
@@ -512,17 +492,14 @@
 
     function showOOBE(type, name) {
         const oobe = document.getElementById('oobeScreen');
-        const title = document.getElementById('oobeTitle');
-        const desc = document.getElementById('oobeDesc');
         oobe.style.display = 'flex';
-        if(type === 'startup') { title.innerText = "CelenganKu v2.1.2"; desc.innerText = "Memuat aplikasi..."; return new Promise(r => setTimeout(() => { oobe.style.display='none'; r(); }, 2000)); }
-        else if(type === 'login') { title.innerText = `Halo, ${name}!`; desc.innerText = "Mempersiapkan akunmu..."; return new Promise(r => setTimeout(() => { oobe.style.display='none'; r(); }, 2000)); }
-        else { title.innerText = "Sampai Jumpa!"; desc.innerText = "Terima kasih telah menabung."; return new Promise(r => setTimeout(() => { oobe.style.display='none'; location.reload(); }, 2000)); }
+        if(type === 'startup') { document.getElementById('oobeTitle').innerText = "CelenganKu v2.2.0"; document.getElementById('oobeDesc').innerText = "Memuat aplikasi..."; return new Promise(r => setTimeout(() => { oobe.style.display='none'; r(); }, 2000)); }
+        else if(type === 'login') { document.getElementById('oobeTitle').innerText = `Halo, ${name}!`; return new Promise(r => setTimeout(() => { oobe.style.display='none'; r(); }, 2000)); }
+        else { document.getElementById('oobeTitle').innerText = "Sampai Jumpa!"; return new Promise(r => setTimeout(() => { oobe.style.display='none'; location.reload(); }, 2000)); }
     }
 
     function handleAuth() {
-        const u = document.getElementById('username').value.trim();
-        const p = document.getElementById('password').value.trim();
+        const u = document.getElementById('username').value.trim(); const p = document.getElementById('password').value.trim();
         if(!u || !p) return alert("Isi data!");
         if(currentAuthMode === 'login') {
             const user = users.find(x => x.username === u && x.password === p);
@@ -550,19 +527,12 @@
     function changePassword(){ const o=document.getElementById('oldPass').value, n=document.getElementById('newPass').value; if(o!==currentUser.password)return alert("Password lama salah"); if(n.length<3)return alert("Pendek!"); currentUser.password=n; updateUI(); document.getElementById('oldPass').value=''; document.getElementById('newPass').value=''; alert("Sukses"); }
     function logout() { if(confirm("Keluar?")) { document.getElementById('authScreen').style.display='flex'; document.getElementById('username').value=''; document.getElementById('password').value=''; } }
 
-    function checkUpdate() { 
-        // Ubah key ini supaya popup muncul lagi di user
-        if(!localStorage.getItem('update_seen_v2.1.2_beta')) { 
-            localStorage.setItem('update_seen_v2.1.2_beta', 'true'); 
-            document.getElementById('updateNotesModal').style.display = 'flex'; 
-        } 
-    }
+    function checkUpdate() { if(!localStorage.getItem('update_seen_v2.2.0_beta')) { localStorage.setItem('update_seen_v2.2.0_beta', 'true'); document.getElementById('updateNotesModal').style.display = 'flex'; } }
     function showUpdateNotes() { document.getElementById('updateNotesModal').style.display = 'flex'; }
     function openDonation() { if(confirm("Buka Saweria?")) window.open('https://saweria.co/tetoyapping29312', '_blank'); }
 
     function initApp() { document.getElementById('userDisplay').innerText = currentUser.username; updateUI(); showPage('homeScreen'); }
     
-    // --- UI LOGIC: DEBT CALCULATION ---
     function updateUI() {
         const idx = users.findIndex(u=>u.username===currentUser.username); if(idx!==-1) { users[idx]=currentUser; localStorage.setItem('celengan_users_v4', JSON.stringify(users)); }
         
@@ -572,8 +542,7 @@
         const total = currentUser.pockets.reduce((a,b)=> (b.type!=='debt'?a+b.balance:a),0); 
         document.getElementById('assetTotalBalance').innerText = isBalanceHidden?'Rp ••••••••':formatRupiah(total);
         
-        let totalDebt = 0;
-        let hasDebt = false;
+        let totalDebt = 0, hasDebt = false;
         currentUser.pockets.forEach(p => {
             if(p.type === 'debt') {
                 const remaining = p.target - p.balance;
@@ -588,38 +557,23 @@
         if(hasDebt && totalDebt > 0) {
             debtSummary.style.display = 'inline-block';
             debtSummary.innerText = isBalanceHidden ? 'Sisa Tagihan: Rp ••••••' : `Sisa Tagihan: ${formatRupiah(totalDebt)}`;
-        } else {
-            debtSummary.style.display = 'none';
-        }
+        } else { debtSummary.style.display = 'none'; }
 
-        if(isBalanceHidden) {
-            eyeIcon.classList.remove('fa-eye');
-            eyeIcon.classList.add('fa-eye-slash');
-        } else {
-            eyeIcon.classList.remove('fa-eye-slash');
-            eyeIcon.classList.add('fa-eye');
-        }
+        if(isBalanceHidden) { eyeIcon.classList.remove('fa-eye'); eyeIcon.classList.add('fa-eye-slash'); } else { eyeIcon.classList.remove('fa-eye-slash'); eyeIcon.classList.add('fa-eye'); }
 
         renderAssetGrid(); 
         if(currentPocketId) loadPocketDetail(currentPocketId);
     }
 
-    // --- ASSET GRID: AUTO HIDE PAID DEBTS ---
     function renderAssetGrid() {
         const grid = document.getElementById('pocketGrid'); grid.innerHTML = '';
         currentUser.pockets.forEach(p => {
-            // Logic Auto-Clean: Skip rendering if debt is paid off (balance >= target)
-            if (p.type === 'debt' && p.balance >= p.target) {
-                return; 
-            }
-
+            if (p.type === 'debt' && p.balance >= p.target) return;
             const isMain=p.name==="Tabungan Utama", isDebt=p.type==='debt';
             let cls = isMain?'pocket-item pocket-main':'pocket-item pocket-regular'; if(isDebt) cls='pocket-item pocket-debt';
             const col = isMain?'white':p.color, bdg = isDebt?'<span class="debt-badge">Hutang</span>':'';
             const el = document.createElement('div'); el.className=cls;
-            
             let displayBal = isBalanceHidden?'••••':formatRupiah(p.balance);
-            
             el.innerHTML = `<div class="pocket-icon-small" style="color:${col}"><i class="fas ${p.icon}"></i></div><div>${bdg}<div class="pocket-name-text">${p.name}</div><div class="pocket-bal-text">${displayBal}</div></div>`;
             el.onclick = () => { showPage('pocketDetailScreen'); loadPocketDetail(p.id); }; grid.appendChild(el);
         });
@@ -678,17 +632,103 @@
         const val = parseInt(document.getElementById('amountInput').value.replace(/\./g,'')||0); const pid = parseInt(document.getElementById('pocketSelect').value);
         if(val<=0) return alert("Nominal salah");
         const pocket = currentUser.pockets.find(p=>p.id===pid);
-        
         if(transactionType==='out' && val > pocket.balance) return alert("Saldo kurang!");
-        
         if(pocket.type === 'debt' && transactionType === 'in') {
             if(pocket.balance >= pocket.target) return alert("Hutang sudah lunas!");
             if(pocket.balance + val > pocket.target) return alert(`Melebihi tagihan! Sisa: ${formatRupiah(pocket.target - pocket.balance)}`);
         }
-
         pocket.balance += transactionType==='in'?val:-val;
         currentUser.transactions.push({ id:Date.now(), type:transactionType, amount:val, pocketId:pid, date:new Date().toISOString(), desc:transactionType==='in'?'Isi Saldo':'Pengeluaran' });
         updateUI(); document.getElementById('transactionModal').style.display='none';
+    }
+
+    /* --- POS / KASIR FUNCTIONS --- */
+    function posAddToCart() {
+        const name = document.getElementById('posItemName').value;
+        const price = parseInt(document.getElementById('posItemPrice').value.replace(/\./g,'')||0);
+        const qty = parseInt(document.getElementById('posItemQty').value)||1;
+        if(!name || price <= 0 || qty <= 0) return alert("Lengkapi data barang!");
+        posCart.push({name, price, qty, total: price * qty});
+        posUpdateCartUI();
+        document.getElementById('posItemName').value = '';
+        document.getElementById('posItemPrice').value = '';
+        document.getElementById('posItemQty').value = 1;
+    }
+    function posUpdateCartUI() {
+        const list = document.getElementById('posCartList'); list.innerHTML = '';
+        let grandTotal = 0;
+        posCart.forEach((item, index) => {
+            grandTotal += item.total;
+            const li = document.createElement('li'); li.className = 'cart-item';
+            li.innerHTML = `<div><b>${item.name}</b><br><small>${item.qty} x ${formatRupiah(item.price)}</small></div><div>${formatRupiah(item.total)} <i class="fas fa-trash" style="color:#red; margin-left:10px; cursor:pointer;" onclick="posRemoveItem(${index})"></i></div>`;
+            list.appendChild(li);
+        });
+        document.getElementById('posTotalDisplay').innerText = formatRupiah(grandTotal);
+        document.getElementById('cartCount').innerText = `${posCart.length} item`;
+    }
+    function posRemoveItem(idx) { posCart.splice(idx, 1); posUpdateCartUI(); }
+    function posResetCart() { if(confirm("Kosongkan keranjang?")) { posCart = []; posUpdateCartUI(); } }
+    function posCheckout() {
+        if(posCart.length === 0) return alert("Keranjang kosong!");
+        const total = posCart.reduce((a,b)=>a+b.total, 0);
+        if(confirm(`Total Rp ${formatRupiah(total)}. Masukkan ke Tabungan Utama?`)) {
+            // Masuk ke Tabungan Utama
+            const mainPocket = currentUser.pockets[0];
+            mainPocket.balance += total;
+            // Catat history
+            currentUser.transactions.push({ id:Date.now(), type:'in', amount:total, pocketId:mainPocket.id, date:new Date().toISOString(), desc:`Penjualan Toko (${posCart.length} item)` });
+            
+            // Generate Receipt Content
+            const date = new Date().toLocaleString();
+            let itemHtml = '';
+            posCart.forEach(item => {
+                itemHtml += `<div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:5px;"><span>${item.name} x${item.qty}</span><span>${formatRupiah(item.total)}</span></div>`;
+            });
+            document.getElementById('receiptDate').innerText = date;
+            document.getElementById('receiptItems').innerHTML = itemHtml;
+            document.getElementById('receiptTotal').innerText = formatRupiah(total);
+            document.getElementById('receiptModal').style.display = 'flex';
+
+            // Reset
+            posCart = []; posUpdateCartUI(); updateUI();
+        }
+    }
+
+    /* --- MANUAL HISTORY FUNCTIONS --- */
+    function openManualHistoryModal() {
+        document.getElementById('manualHistoryModal').style.display = 'flex';
+        document.getElementById('manualDate').valueAsDate = new Date(); // Default hari ini
+    }
+    function setManualType(t) { manualType = t; document.getElementById('optManIn').className=t==='in'?'radio-option selected':'radio-option'; document.getElementById('optManOut').className=t==='out'?'radio-option selected':'radio-option'; }
+    function saveManualHistory() {
+        const desc = document.getElementById('manualDesc').value;
+        const val = parseInt(document.getElementById('manualAmount').value.replace(/\./g,'')||0);
+        const dateVal = document.getElementById('manualDate').value;
+        if(!desc || val <= 0 || !dateVal) return alert("Lengkapi data!");
+        
+        // Simpan ke Pocket Utama (karena hutang lama biasanya cashflow umum)
+        const pid = currentUser.pockets[0].id;
+        const pocket = currentUser.pockets[0];
+        
+        // Update Saldo (Opsional: Jika user ingin hanya catat history tanpa ubah saldo sekarang, bisa dikasih opsi. Tapi default kita ubah saldo biar balance)
+        if(confirm("Apakah transaksi ini mempengaruhi Saldo saat ini?\nOK = Ya (Saldo Berubah)\nCancel = Tidak (Cuma Catat History)")) {
+            pocket.balance += manualType==='in' ? val : -val;
+        }
+
+        currentUser.transactions.push({
+            id: Date.now(),
+            type: manualType,
+            amount: val,
+            pocketId: pid,
+            date: new Date(dateVal).toISOString(),
+            desc: desc + " (Manual)"
+        });
+
+        updateUI();
+        document.getElementById('manualHistoryModal').style.display = 'none';
+        document.getElementById('manualDesc').value = '';
+        document.getElementById('manualAmount').value = '';
+        renderGlobalHistory(); // Refresh list history
     }
 
     function selectPocketType(t) { tempNewPocket.type=t; document.getElementById('optRegular').className=t==='regular'?'radio-option selected':'radio-option'; document.getElementById('optDebt').className=t==='debt'?'radio-option selected':'radio-option'; document.getElementById('newPocketTarget').style.display=t==='debt'?'block':'none'; }
